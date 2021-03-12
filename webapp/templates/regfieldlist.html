@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}
+    Realtek - Register table {{platform }} - {{ register.name | upper }}
+{% endblock %}
+{% block content %}
+{{ super() }}
+<h2>Realtek {{ platform }} register: {{ register.name | upper }}</h2>
+<dl>
+	<dt>Register name</dt><dd>{{ register.name }}</dd>
+	<dt>Register offset</dt><dd>{{ "%04x" | format(register.offset) }}</dd>
+	<dt>Port index range</dt><dd>{{ "%d - %d" | format(register.port_idx_min, register.port_idx_max) }}</dd>
+	<dt>Array index range</dt><dd>{{ "%d - %d" | format(register.array_idx_min, register.array_idx_max) }}</dd>
+	<dt>Portlist index</dt><dd>{{ "%d" | format(register.portlist_idx) }}</dd>
+	<dt>Bit offset </dt><dd>{{ "%d" | format(register.bit_offset) }}</dd>
+</dl>
+<table>
+<thead>
+<tr>
+	<th>LSB</th>
+	<th>Bit size</th>
+	<th>Field name</th>
+</tr>
+</thead>
+<tbody>
+{% for field in field_list %}
+<tr>
+	<td>{{ "%d" | format(field.lsb) }}</td>
+    <td>{{ "%d" | format(field.size) }}</td>
+    <td>{{ field.name | upper }}</td>
+<tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

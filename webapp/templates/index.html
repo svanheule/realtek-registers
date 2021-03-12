@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}
+    Realtek - Register docs
+{% endblock %}
+{% block content %}
+{{ super() }}
+<h2>Realtek register list</h2>
+<p>Platforms</p>
+<ul>
+{% for family in families %}
+<li><a href="{{ url_for('reglist', platform=family.name)  }}">{{ "RTL%04x" | format(family.id) }}: {{ family.name }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
