@@ -2,9 +2,12 @@
 {% block title %}
     Realtek - Register table {{platform }} - {{ register.name | upper }}
 {% endblock %}
+{% block header %}
+{{ super() }}
+<h2>{{ platform }} register: {{ register.name | upper }}</h2>
+{% endblock %}
 {% block content %}
 {{ super() }}
-<h2>Realtek {{ platform }} register: {{ register.name | upper }}</h2>
 <dl>
 	<dt>Register name</dt><dd>{{ register.name }}</dd>
 	<dt>Register offset</dt><dd>{{ "%04x" | format(register.offset) }}</dd>
