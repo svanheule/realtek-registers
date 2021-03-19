@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import abort, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import os
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -8,7 +9,9 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///realtek-register.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class Family(db.Model):
     id = db.Column(db.Integer, primary_key=True)
