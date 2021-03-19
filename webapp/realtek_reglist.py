@@ -70,6 +70,44 @@ class Field(db.Model):
                 self.register.name, self.name, self.lsb, self.size)
 
 
+class Table(db.Model):
+    __table_args__ = (db.UniqueConstraint('family_id', 'name', name='u_family_table'),)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    access_type = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.Integer, nullable=False)
+
+    family_id = db.Column(db.Integer, db.ForeignKey('family.id'), nullable=False)
+    family = db.relationship('Family', backref=db.backref('tables', lazy=True))
+
+    feature_id = db.Column(db.Integer, db.ForeignKey('feature.id'), nullable=False)
+    feature = db.relationship('Feature', backref=db.backref('tables', lazy=True))
+
+    ctrl_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
+    ctrl_register = db.relationship('Register', foreign_keys=ctrl_register_id)
+    data_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
+    data_register = db.relationship('Register', foreign_keys=data_register_id)
+
+    def __repr__(self):
+        fam_name = self.family.name
+        return '<Table {}/{} : ctrl={}>'.format(fam_name, self.name, self.ctrl_register)
+
+
+class TableField(db.Model):
+    __table_args__ = (db.UniqueConstraint('table_id', 'lsb', name='u_table_field'),)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    lsb = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.Integer, nullable=False)
+
+    table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=False)
+    table = db.relationship('Table', backref=db.backref('fields', lazy=True))
+
+    def __repr__(self):
+        return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
+                self.table.name, self.name, self.lsb, self.size)
+
+
 @app.route('/realtek/')
 def index():
     families = Family.query.order_by(Family.id).all()
