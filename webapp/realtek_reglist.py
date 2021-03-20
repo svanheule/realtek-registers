@@ -81,12 +81,12 @@ def index():
 def reglist(platform=None, feature=None):
     if platform is not None and feature is not None:
         query = db.session.query(Register)\
-            .join(Feature, Feature.id == Register.feature_id)\
-            .join(Family, Family.id == Register.family_id)\
+            .join(Register.feature)\
+            .join(Register.family)\
             .filter(Family.name == platform, Feature.name == feature.upper())
     elif platform is not None:
         query = db.session.query(Register)\
-            .join(Family, Family.id == Register.family_id)\
+            .join(Register.family)\
             .filter(Family.name == platform)
     else:
         abort(400)
@@ -103,8 +103,8 @@ def reglist(platform=None, feature=None):
 @app.route('/realtek/<string:platform>/register/<string:register>')
 def regfieldlist(platform, register):
     query = db.session.query(Field)\
-            .join(Register, Field.register_id == Register.id)\
-            .join(Family, Register.family_id == Family.id)\
+            .join(Field.register)\
+            .join(Register.family)\
             .filter(Family.name == platform, Register.name == register.upper())
 
     rows = query.order_by(Field.lsb.desc())
@@ -112,7 +112,7 @@ def regfieldlist(platform, register):
         abort(404)
 
     query = db.session.query(Register)\
-            .join(Family, Register.family_id == Family.id)\
+            .join(Register.family)\
             .filter(Family.name == platform, Register.name == register.upper())
     register = query.first()
 
