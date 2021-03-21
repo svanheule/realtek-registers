@@ -161,7 +161,7 @@ def regfieldlist(platform, register):
 @app.route('/realtek/<string:platform>/table')
 def tablelist(platform):
     query = db.session.query(Table).join(Table.family)\
-            .filter(Family.name == platform).order_by(Table.name.desc())
+            .filter(Family.name == platform).order_by(Table.name.asc())
 
     if query.count() == 0:
         abort(404)
