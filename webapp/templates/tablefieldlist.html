@@ -13,10 +13,10 @@
 	<dt>Size</dt><dd>{{ table.size }}</dd>
     <dt>Access type</dt><dd>{{ table.access_type }}</dd>
     <dt>Control register</dt>
-    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.ctrl_register.name) }}">
+    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
             {{ table.ctrl_register.name }}</a></dd>
     <dt>Data register</dt>
-    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.data_register.name) }}">
+    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">
             {{ table.data_register.name }}</a></dd>
 </dl>
 <table>
