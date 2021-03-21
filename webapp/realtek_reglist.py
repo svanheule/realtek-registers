@@ -1,9 +1,10 @@
 import datetime
-from flask import Flask
+from flask import Flask, Markup
 from flask import abort, render_template
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import markdown
 import os
 from sqlalchemy.ext.hybrid import hybrid_property
 import sqlite3
@@ -15,6 +16,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+@app.template_filter('markdown')
+def markdown_filter(s):
+    return Markup(markdown.markdown(s, extensions=['sane_lists', 'smarty'], output_format='html5'))
 
 
 # Description linking tables
