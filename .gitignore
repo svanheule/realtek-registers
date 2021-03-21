@@ -1,2 +1,12 @@
 # python files
 __pycache__/
+
+# backup files
+*.swp
+*.bak
+*.tmp
+*~
+
+# data files
+*.csv
+*.db
