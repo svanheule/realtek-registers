@@ -46,21 +46,48 @@ article a {
 article a:hover, article a:active {
     color: #f57900;
 }
-.overview thead {
+.reglist thead {
     font-size: larger;
 }
-.overview {
+.reglist {
+    float: left;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
     min-width: 50em;
 }
-.overview thead {
+.reglist thead {
     background-color: white;
-    position: sticky;
-    top: 3em;
 }
-.overview th {
+.reglist th {
     padding: 0.5em 0.3em;
+}
+.reglist th:nth-child(1) {
+    width: 7em;
+}
+.reglist th:nth-child(2) {
+    width: 4em;
+}
+.reglist tr td:nth-child(1) {
+    font-weight: bold;
+}
+.reglist tr:nth-child(odd) td, .tablelist tr:nth-child(odd) td {
+    background-color: #eeeeee;
+}
+.fieldlist th, .fieldlist td {
+    text-align: left;
+    min-width: 5em;
+}
+.fieldlist {
+    border-collapse: collapse;
+}
+.fieldlist th:nth-child(1), .fieldlist td:nth-child(1) {
+    text-align: right;
+}
+.fieldlist th:nth-child(2), .fieldlist td:nth-child(2) {
+    text-align: center ;
+}
+.fieldlist tr:nth-child(odd) td {
+    background-color: #eeeeee;
 }
 </style>
 </head>

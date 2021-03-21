@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}
-    Realtek - Register table {{ platform }}
-    {% if feature %} - {{ feature }} {% endif %}
+	Realtek - Register table {{ platform }}
+	{% if feature %} - {{ feature }} {% endif %}
 {% endblock %}
 {% block header %}
 {{ super() }}
@@ -10,21 +10,26 @@
 
 {% block content %}
 {{ super() }}
-<table class="overview">
+<table class="reglist">
 <thead>
 <tr>
+	<th>Feature</th>
 	<th>Offset</th>
-	<th>SoC feature</th>
 	<th>Register name</th>
 </tr>
 </thead>
 <tbody>
 {% for reg in register_list %}
+{% if loop.previtem is not defined or reg.feature.name != loop.previtem.feature.name %}
 <tr>
+	<td colspan="3"><a href="{{ url_for('reglist', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a></td>
+</tr>
+{% endif %}
+<tr>
+    <td></td>
 	<td>{{ "%04x" | format(reg.offset) }}</td>
-    <td><a href="{{ url_for('reglist', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a></td>
-    <td><a href="{{ url_for('regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
-<tr>
+	<td><a href="{{ url_for('regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
+</tr>
 {% endfor %}
 </tbody>
 </table>
