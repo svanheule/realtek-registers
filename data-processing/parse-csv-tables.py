@@ -14,6 +14,7 @@ db.drop_all()
 db.create_all()
 
 for fam_id,fam_name in soc_families.items():
+    print(f'{fam_name}...')
     db.session.add(Family(id=fam_id, name=fam_name))
     db.session.commit()
     features = set()
