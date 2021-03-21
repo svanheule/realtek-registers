@@ -189,3 +189,7 @@ def tablefieldlist(platform, table):
 
     return render_template('tablefieldlist.html', platform=platform,
             table=table, field_list=rows)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
