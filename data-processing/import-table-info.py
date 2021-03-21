@@ -133,7 +133,7 @@ table_access_set = {
 for fam_id,fam_name in soc_families.items():
     family = db.session.query(Family).where(Family.id == fam_id, Family.name == fam_name).one()
 
-    print(family)
+    print(f'{fam_name}...')
     features = dict()
     access_regs = dict()
     tables = dict()
