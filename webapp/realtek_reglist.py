@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
+from sqlalchemy.ext.hybrid import hybrid_property
 import sqlite3
 from werkzeug.utils import secure_filename
 
@@ -35,6 +36,15 @@ table_field_description = db.Table('table_field_description',
 )
 
 
+class DescriptionMixin:
+    @hybrid_property
+    def description(self):
+        if len(self.description_revisions) > 0:
+            return self.description_revisions[-1].value
+        else:
+            return ''
+
+
 class Family(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -55,7 +65,7 @@ class Feature(db.Model):
         return '<Feature {}/{}>'.format(self.family.name, self.name)
 
 
-class Register(db.Model):
+class Register(DescriptionMixin, db.Model):
     __table_args__ = (db.UniqueConstraint('family_id', 'name', name='u_family_register'),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -80,7 +90,7 @@ class Register(db.Model):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
 
 
-class Field(db.Model):
+class Field(DescriptionMixin, db.Model):
     __table_args__ = (db.UniqueConstraint('register_id', 'lsb', name='u_register_field'),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -98,7 +108,7 @@ class Field(db.Model):
                 self.register.name, self.name, self.lsb, self.size)
 
 
-class Table(db.Model):
+class Table(DescriptionMixin, db.Model):
     __table_args__ = (db.UniqueConstraint('family_id', 'name', name='u_family_table'),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -124,7 +134,7 @@ class Table(db.Model):
         return '<Table {}/{} : ctrl={}>'.format(fam_name, self.name, self.ctrl_register)
 
 
-class TableField(db.Model):
+class TableField(DescriptionMixin, db.Model):
     __table_args__ = (db.UniqueConstraint('table_id', 'lsb', name='u_table_field'),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
