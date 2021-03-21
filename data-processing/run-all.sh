@@ -25,10 +25,10 @@ for pl in $PLATFORMS; do
 	path=$chipdef/$pl
 	prefix=rtk_${pl}_
 	echo "$pl..."
-	cat $path/${prefix}reg_list.c | awk -f $BASE/reglist.awk >reglist-$pl.csv
-	cat $path/${prefix}regField_list.c | awk -f $BASE/regfieldlist.awk >regfieldlist-$pl.csv
-	cat $path/${prefix}table_list.c | awk -f $BASE/tablelist.awk >tablelist-$pl.csv
-	cat $path/${prefix}tableField_list.c | awk -f $BASE/tablefieldlist.awk >tablefieldlist-$pl.csv
+	awk -f $BASE/reglist.awk < $path/${prefix}reg_list.c > reglist-$pl.csv
+	awk -f $BASE/regfieldlist.awk < $path/${prefix}regField_list.c > regfieldlist-$pl.csv
+	awk -f $BASE/tablelist.awk < $path/${prefix}table_list.c > tablelist-$pl.csv
+	awk -f $BASE/tablefieldlist.awk < $path/${prefix}tableField_list.c > tablefieldlist-$pl.csv
 done
 
 if [ ! -e "realtek_reglist.py" ]; then
