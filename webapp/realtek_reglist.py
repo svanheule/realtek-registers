@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import abort, render_template
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
@@ -106,6 +107,11 @@ class TableField(db.Model):
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
                 self.table.name, self.name, self.lsb, self.size)
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Text, unique=True, nullable=False)
 
 
 @app.route('/realtek/')

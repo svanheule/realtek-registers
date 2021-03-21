@@ -1,2 +1,3 @@
 Flash-SQLAlchemy
 Flask-Migrate
+Flask-Login
