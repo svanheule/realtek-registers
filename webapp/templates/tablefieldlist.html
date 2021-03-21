@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}
+    Realtek - Table info {{platform }} - {{ table.name | upper }}
+{% endblock %}
+{% block header %}
+{{ super() }}
+<h2>{{ platform }} table: {{ table.name | upper }}</h2>
+{% endblock %}
+{% block content %}
+{{ super() }}
+<dl>
+	<dt>Name</dt><dd>{{ table.name }}</dd>
+	<dt>Size</dt><dd>{{ table.size }}</dd>
+    <dt>Access type</dt><dd>{{ table.access_type }}</dd>
+    <dt>Control register</dt>
+    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.ctrl_register.name) }}">
+            {{ table.ctrl_register.name }}</a></dd>
+    <dt>Data register</dt>
+    <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.data_register.name) }}">
+            {{ table.data_register.name }}</a></dd>
+</dl>
+<table>
+<thead>
+<tr>
+	<th>LSB</th>
+	<th>Bit size</th>
+	<th>Field name</th>
+</tr>
+</thead>
+<tbody>
+{% for field in field_list %}
+<tr>
+	<td>{{ "%d" | format(field.lsb) }}</td>
+    <td>{{ "%d" | format(field.size) }}</td>
+    <td>{{ field.name | upper }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

@@ -156,3 +156,36 @@ def regfieldlist(platform, register):
 
     return render_template('regfieldlist.html', platform=platform,
             register=register, field_list=rows)
+
+
+@app.route('/realtek/<string:platform>/table')
+def tablelist(platform):
+    query = db.session.query(Table).join(Table.family)\
+            .filter(Family.name == platform).order_by(Table.name.desc())
+
+    if query.count() == 0:
+        abort(404)
+
+    tables = query.all()
+
+    return render_template('tablelist.html', platform=platform, tables=query.all())
+
+
+@app.route('/realtek/<string:platform>/table/<string:table>')
+def tablefieldlist(platform, table):
+    query = db.session.query(TableField)\
+            .join(TableField.table)\
+            .join(Table.family)\
+            .filter(Family.name == platform, Table.name == table.upper())
+
+    rows = query.order_by(TableField.lsb.desc())
+    if rows.count() == 0:
+        abort(404)
+
+    query = db.session.query(Table)\
+            .join(Table.family)\
+            .filter(Family.name == platform, Table.name == table.upper())
+    table = query.first()
+
+    return render_template('tablefieldlist.html', platform=platform,
+            table=table, field_list=rows)
