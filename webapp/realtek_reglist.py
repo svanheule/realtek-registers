@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask
 from flask import abort, render_template
 from flask_login import UserMixin
@@ -13,6 +14,26 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+# Description linking tables
+register_description = db.Table('register_description',
+    db.Column('register_id', db.ForeignKey('register.id'), nullable=False),
+    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
+)
+field_description = db.Table('field_description',
+    db.Column('field_id', db.ForeignKey('field.id'), nullable=False),
+    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
+)
+table_description = db.Table('table_description',
+    db.Column('register_id', db.ForeignKey('table.id'), nullable=False),
+    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
+)
+table_field_description = db.Table('table_field_description',
+    db.Column('table_field_id', db.ForeignKey('table_field.id'), nullable=False),
+    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
+)
+
 
 class Family(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,6 +73,9 @@ class Register(db.Model):
     feature_id = db.Column(db.Integer, db.ForeignKey('feature.id'), nullable=False)
     feature = db.relationship('Feature', backref=db.backref('registers', lazy=True))
 
+    description_revisions = db.relationship('DescriptionRevision',
+            secondary=register_description)
+
     def __repr__(self):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
 
@@ -65,6 +89,9 @@ class Field(db.Model):
 
     register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
     register = db.relationship('Register', backref=db.backref('fields', lazy=True))
+
+    description_revisions = db.relationship('DescriptionRevision',
+            secondary=field_description)
 
     def __repr__(self):
         return '<Field {}/{}/{} : {}+{}>'.format(self.register.family.name,
@@ -89,6 +116,9 @@ class Table(db.Model):
     data_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
     data_register = db.relationship('Register', foreign_keys=data_register_id)
 
+    description_revisions = db.relationship('DescriptionRevision',
+            secondary=table_description)
+
     def __repr__(self):
         fam_name = self.family.name
         return '<Table {}/{} : ctrl={}>'.format(fam_name, self.name, self.ctrl_register)
@@ -104,6 +134,9 @@ class TableField(db.Model):
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=False)
     table = db.relationship('Table', backref=db.backref('fields', lazy=True))
 
+    description_revisions = db.relationship('DescriptionRevision',
+            secondary=table_field_description)
+
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
                 self.table.name, self.name, self.lsb, self.size)
@@ -112,6 +145,15 @@ class TableField(db.Model):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Text, unique=True, nullable=False)
+
+
+class DescriptionRevision(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    value = db.Column(db.Text, nullable=False)
+
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    author = db.relationship('User', backref=db.backref('contributions', lazy=True))
 
 
 @app.route('/realtek/')
