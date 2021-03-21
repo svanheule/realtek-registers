@@ -74,7 +74,7 @@ class Register(db.Model):
     feature = db.relationship('Feature', backref=db.backref('registers', lazy=True))
 
     description_revisions = db.relationship('DescriptionRevision',
-            secondary=register_description)
+            secondary=register_description, order_by='DescriptionRevision.timestamp')
 
     def __repr__(self):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
@@ -91,7 +91,7 @@ class Field(db.Model):
     register = db.relationship('Register', backref=db.backref('fields', lazy=True))
 
     description_revisions = db.relationship('DescriptionRevision',
-            secondary=field_description)
+            secondary=field_description, order_by='DescriptionRevision.timestamp')
 
     def __repr__(self):
         return '<Field {}/{}/{} : {}+{}>'.format(self.register.family.name,
@@ -117,7 +117,7 @@ class Table(db.Model):
     data_register = db.relationship('Register', foreign_keys=data_register_id)
 
     description_revisions = db.relationship('DescriptionRevision',
-            secondary=table_description)
+            secondary=table_description, order_by='DescriptionRevision.timestamp')
 
     def __repr__(self):
         fam_name = self.family.name
@@ -135,7 +135,7 @@ class TableField(db.Model):
     table = db.relationship('Table', backref=db.backref('fields', lazy=True))
 
     description_revisions = db.relationship('DescriptionRevision',
-            secondary=table_field_description)
+            secondary=table_field_description, order_by='DescriptionRevision.timestamp')
 
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
