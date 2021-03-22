@@ -18,6 +18,11 @@
 	<dt>Bit offset </dt><dd>{{ "%d" | format(register.bit_offset) }}</dd>
 </dl>
 
+{% if register.description %}
+<h3>Description</h3>
+{{ register.description | markdown }}
+{% endif %}
+
 <h3>Fields</h3>
 <table>
 <thead>
@@ -25,6 +30,7 @@
 	<th>LSB</th>
 	<th>Bit size</th>
 	<th>Field name</th>
+    <th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -33,6 +39,9 @@
 	<td>{{ "%d" | format(field.lsb) }}</td>
     <td>{{ "%d" | format(field.size) }}</td>
     <td>{{ field.name | upper }}</td>
+    <td>
+        {{ field.description | markdown }}
+    </td>
 </tr>
 {% endfor %}
 </tbody>
