@@ -161,6 +161,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Text, unique=True, nullable=False)
 
+    def __repr__(self):
+        return '<User {} ({}active)>'.format(self.username, '' if self.is_active else 'not ')
+
 
 class DescriptionRevision(db.Model):
     id = db.Column(db.Integer, primary_key=True)
