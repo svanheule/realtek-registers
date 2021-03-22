@@ -1,7 +1,7 @@
 import datetime
 from flask import Flask, Markup
 from flask import abort, render_template
-from flask_login import UserMixin
+from flask_login import LoginManager, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import markdown
@@ -13,9 +13,14 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///realtek-register.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environb.get(b'SECRET_KEY')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 
 @app.template_filter('markdown')
 def markdown_filter(s):
@@ -163,6 +168,11 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {} ({}active)>'.format(self.username, '' if self.is_active else 'not ')
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 class DescriptionRevision(db.Model):
