@@ -8,6 +8,7 @@
 {% endblock %}
 {% block content %}
 {{ super() }}
+<h3>Details</h3>
 <dl>
 	<dt>Register name</dt><dd>{{ register.name }}</dd>
 	<dt>Register offset</dt><dd>{{ "%04x" | format(register.offset) }}</dd>
@@ -16,6 +17,8 @@
 	<dt>Portlist index</dt><dd>{{ "%d" | format(register.portlist_idx) }}</dd>
 	<dt>Bit offset </dt><dd>{{ "%d" | format(register.bit_offset) }}</dd>
 </dl>
+
+<h3>Fields</h3>
 <table>
 <thead>
 <tr>

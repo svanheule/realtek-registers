@@ -8,6 +8,7 @@
 {% endblock %}
 {% block content %}
 {{ super() }}
+<h3>Details</h3>
 <dl>
 	<dt>Name</dt><dd>{{ table.name }}</dd>
 	<dt>Size</dt><dd>{{ table.size }}</dd>
@@ -19,6 +20,8 @@
     <dd><a href="{{ url_for('regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">
             {{ table.data_register.name }}</a></dd>
 </dl>
+
+<h3>Fields</h3>
 <table>
 <thead>
 <tr>
