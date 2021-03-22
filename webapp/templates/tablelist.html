@@ -23,8 +23,8 @@
 {% for table in tables %}
 <tr>
     <td><a href="{{ url_for('tablefieldlist', platform=platform, table=table.name.lower()) }}">{{ table.name }}</a></td>
-    <td>{{ table.size }}</td>
-    <td>{{ table.access_type }}</td>
+    <td class="num">{{ table.size }}</td>
+    <td class="num">{{ table.access_type }}</td>
     <td><a href="{{ url_for('regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
             {{ table.ctrl_register.name }}</a></td>
     <td><a href="{{ url_for('regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">

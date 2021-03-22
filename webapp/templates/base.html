@@ -51,16 +51,41 @@ article a:hover, article a:active {
 }
 .overview {
     margin: 0 auto;
-    text-align: center;
     min-width: 50em;
+    border-collapse: collapse;
 }
 .overview thead {
     background-color: white;
     position: sticky;
     top: 3em;
+    text-align: left;
 }
-.overview th {
+.overview th, .fieldlist th {
     padding: 0.5em 0.3em;
+}
+.overview td, .fieldlist td {
+    padding: 0.3em;
+}
+.overview tbody tr:nth-child(even), .fieldlist tbody tr:nth-child(even) {
+    background-color: #eee;
+}
+.overview .num, .fieldlist .num {
+    text-align: right;
+}
+.fieldlist {
+    border-collapse: collapse;
+}
+.fieldlist td p {
+    margin: 0.5em 0;
+}
+.fieldlist td p:first-child {
+    margin-top: 0;
+}
+.fieldlist td p:last-child {
+    margin-bottom: 0;
+}
+.fieldlist td {
+    vertical-align: top;
 }
 </style>
 </head>

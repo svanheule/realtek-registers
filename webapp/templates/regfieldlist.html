@@ -33,21 +33,21 @@
 {% endif %}
 
 <h3>Fields</h3>
-<table>
+<table class="fieldlist">
 <thead>
 <tr>
+    <th>Name</th>
     <th>LSB</th>
-    <th>Bit size</th>
-    <th>Field name</th>
+    <th>Bits</th>
     <th>Description</th>
 </tr>
 </thead>
 <tbody>
 {% for field in field_list %}
 <tr>
-    <td>{{ "%d" | format(field.lsb) }}</td>
-    <td>{{ "%d" | format(field.size) }}</td>
     <td>{{ field.name | upper }}</td>
+    <td class="num">{{ "%d" | format(field.lsb) }}</td>
+    <td class="num">{{ "%d" | format(field.size) }}</td>
     <td>
         {{ field.description | markdown }}
         {% if current_user.is_authenticated %}

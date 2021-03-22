@@ -14,16 +14,16 @@
 <thead>
 <tr>
     <th>Offset</th>
-    <th>SoC feature</th>
-    <th>Register name</th>
+    <th>Name</th>
+    <th>Feature</th>
 </tr>
 </thead>
 <tbody>
 {% for reg in register_list %}
 <tr>
-    <td>{{ "%04x" | format(reg.offset) }}</td>
-    <td><a href="{{ url_for('reglist', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a></td>
+    <td class="num">{{ "%04x" | format(reg.offset) }}</td>
     <td><a href="{{ url_for('regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
+    <td><a href="{{ url_for('reglist', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a></td>
 </tr>
 {% endfor %}
 </tbody>
