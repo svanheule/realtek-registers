@@ -18,8 +18,10 @@
     {% if register.array_idx_max > 0 %}
     <dt>Array index range</dt><dd>{{ "%d - %d" | format(register.array_idx_min, register.array_idx_max) }}</dd>
     {% endif %}
+    {% if register.array_idx_max > 0 or register.port_idx_max > 0 %}
     <dt>Portlist index</dt><dd>{{ "%d" | format(register.portlist_idx) }}</dd>
     <dt>Bit offset </dt><dd>{{ "%d" | format(register.bit_offset) }}</dd>
+    {% endif %}
 </dl>
 
 {% if register.description or current_user.is_authenticated %}
