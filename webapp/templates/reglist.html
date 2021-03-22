@@ -24,7 +24,7 @@
     <td>{{ "%04x" | format(reg.offset) }}</td>
     <td><a href="{{ url_for('reglist', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a></td>
     <td><a href="{{ url_for('regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
-<tr>
+</tr>
 {% endfor %}
 </tbody>
 </table>
