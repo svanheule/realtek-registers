@@ -1,7 +1,8 @@
 import datetime
 from flask import Flask, Markup
-from flask import abort, render_template
-from flask_login import LoginManager, UserMixin
+from flask import abort, render_template, request, redirect, url_for
+import flask_login
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import markdown
@@ -232,6 +233,58 @@ def regfieldlist(platform, register):
 
     return render_template('regfieldlist.html', platform=platform,
             register=register, field_list=rows)
+
+
+@app.route('/realtek/<string:platform>/<string:itemtype>/<string:itemname>/edit/', methods=['GET', 'POST'])
+@app.route('/realtek/<string:platform>/<string:itemtype>/<string:itemname>/<string:itemfield>/edit/', methods=['GET', 'POST'])
+def description_edit(platform, itemtype, itemname, itemfield=None):
+    # Deny unauthenticated users
+    if not flask_login.current_user.is_authenticated:
+        abort(403)
+
+    if itemtype == 'register':
+        if itemfield is None:
+            query = db.session.query(Register)\
+                .join(Register.family)\
+                .filter(Family.name == platform, Register.name == itemname.upper())
+        else:
+            query = db.session.query(Field)\
+                .join(Field.register)\
+                .join(Register.family)\
+                .filter(Family.name == platform, Register.name == itemname.upper(), Field.name == itemfield.upper())
+    elif itemtype == 'table':
+        if itemfield is None:
+            query = db.session.query(Table)\
+                .join(Table.family)\
+                .filter(Family.name == platform, Table.name == itemname.upper())
+        else:
+            query = db.session.query(Field)\
+                .join(Field.register)\
+                .join(Register.family)\
+                .filter(Family.name == platform, Table.name == itemname.upper(), TableField.name == itemfield.upper())
+    else:
+        abort(404)
+
+    if query.count() == 0:
+        abort(404)
+
+    item = query.first()
+
+    if request.method == 'POST':
+        user = flask_login.current_user
+        if not user.is_anonymous and  user.is_active:
+            d = DescriptionRevision(author=user, value=request.form['description'].strip())
+            item.description_revisions.append(d)
+            db.session.commit()
+        if itemtype == 'register':
+            return redirect(url_for('regfieldlist', platform=platform, register=itemname))
+        elif itemtype == 'table':
+            return redirect(url_for('tablefieldlist', platform=platform, table=itemname))
+        else:
+            abort(404)
+    else:
+        return render_template('description_edit.html', platform=platform,
+                itemtype=itemtype, itemname=itemname, itemfield=itemfield, item=item)
 
 
 @app.route('/realtek/<string:platform>/table')

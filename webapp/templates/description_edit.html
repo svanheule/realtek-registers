@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}
+Realtek - Edit description for {{ itemname | upper }}
+{% endblock %}
+{% block content %}
+{{ super() }}
+<h2>Edit description for {{ itemname | upper }}{% if itemfield %}/{{ itemfield | upper }}{% endif %}</h2>
+<form method="post" action="{{
+    url_for('description_edit', platform=platform, itemtype=itemtype, itemname=itemname, itemfield=itemfield) | lower 
+}}">
+<textarea name="description" style="width: 90%; min-height: 25em; display: block">{{ item.description }}</textarea>
+<input type="submit" value="Save">
+</form>
+{% if item.description_revisions %}
+<h3>History</h3>
+<ul>
+{% for rev in item.description_revisions %}
+<li>{{ rev.timestamp }} by {{ rev.author.username }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

@@ -18,9 +18,14 @@
     <dt>Bit offset </dt><dd>{{ "%d" | format(register.bit_offset) }}</dd>
 </dl>
 
-{% if register.description %}
+{% if register.description or current_user.is_authenticated %}
 <h3>Description</h3>
 {{ register.description | markdown }}
+{% if current_user.is_authenticated %}
+<p class="edit"><a href="{{
+    url_for('description_edit', platform=platform, itemtype='register', itemname=register.name) | lower
+    }}">Edit</a></p>
+{% endif %}
 {% endif %}
 
 <h3>Fields</h3>
@@ -41,6 +46,11 @@
     <td>{{ field.name | upper }}</td>
     <td>
         {{ field.description | markdown }}
+        {% if current_user.is_authenticated %}
+        <p class="edit"><a href="{{
+            url_for('description_edit', platform=platform, itemtype='register', itemname=register.name, itemfield=field.name) | lower
+            }}">Edit</a></p>
+        {% endif %}
     </td>
 </tr>
 {% endfor %}
