@@ -29,7 +29,7 @@
 {{ register.description | markdown }}
 {% if current_user.is_authenticated %}
 <p class="edit"><a href="{{
-    url_for('description_edit', platform=platform, itemtype='register', itemname=register.name) | lower
+    url_for('realtek.description_edit', platform=platform, itemtype='register', itemname=register.name) | lower
     }}">Edit</a></p>
 {% endif %}
 {% endif %}
@@ -54,7 +54,7 @@
         {{ field.description | markdown }}
         {% if current_user.is_authenticated %}
         <p class="edit"><a href="{{
-            url_for('description_edit', platform=platform, itemtype='register', itemname=register.name, itemfield=field.name) | lower
+            url_for('realtek.description_edit', platform=platform, itemtype='register', itemname=register.name, itemfield=field.name) | lower
             }}">Edit</a></p>
         {% endif %}
     </td>

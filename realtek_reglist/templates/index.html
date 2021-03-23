@@ -12,8 +12,8 @@
 {% for family in families %}
 <li>{{ "RTL%04x" | format(family.id) }}: {{ family.name }}</li>
     <ul>
-    <li><a href="{{ url_for('reglist', platform=family.name)  }}">registers</a></li>
-    <li><a href="{{ url_for('tablelist', platform=family.name)  }}">tables</a></li>
+    <li><a href="{{ url_for('realtek.reglist', platform=family.name)  }}">registers</a></li>
+    <li><a href="{{ url_for('realtek.tablelist', platform=family.name)  }}">tables</a></li>
     </ul>
 </li>
 {% endfor %}
