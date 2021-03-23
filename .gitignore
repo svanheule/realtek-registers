@@ -10,3 +10,7 @@ __pycache__/
 # data files
 *.csv
 *.db
+
+# files with app secrets
+.env
+config.py
