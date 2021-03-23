@@ -2,3 +2,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 Flask-Login
 markdown
+Flask-Dance[sqla]

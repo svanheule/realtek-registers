@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, Markup
 from flask import abort, render_template, request, redirect, url_for
+from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 import flask_login
 from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -169,6 +170,11 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {} ({}active)>'.format(self.username, '' if self.is_active else 'not ')
+
+
+class OAuth(OAuthConsumerMixin, db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user = db.relationship(User)
 
 
 @login_manager.user_loader
