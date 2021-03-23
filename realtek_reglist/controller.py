@@ -1,17 +1,49 @@
 from flask import abort, render_template, request, redirect, url_for
 from flask import Blueprint
-from flask_login import current_user
+from flask_dance.consumer import oauth_authorized
+from flask_dance.contrib.github import github
+from flask_login import current_user, login_user, logout_user
 
 from .models import db
+from .models.auth import User
 from .models.description import DescriptionRevision
 from .models.soc import Family, Feature, Register, Field, Table, TableField
+from .oauth import github_blueprint
 
 bp = Blueprint('realtek', __name__)
+
 
 @bp.route('/')
 def index():
     families = Family.query.order_by(Family.id).all()
     return render_template('index.html', families=families)
+
+@bp.route('/github')
+def login():
+    if not github.authorized:
+        return redirect(url_for('github.login'))
+    return redirect(url_for('realtek.index'))
+
+@bp.route('/logout/')
+def logout():
+    logout_user()
+    return redirect(url_for('realtek.index'))
+
+
+@oauth_authorized.connect_via(github_blueprint)
+def github_logged_in(blueprint, token):
+    info = blueprint.session.get('/user')
+    if info.ok:
+        account_info = info.json()
+        username = account_info['login']
+
+        query = User.query.filter_by(username=username)
+        try:
+            user = query.one()
+            login_user(user)
+        except NoResultFound:
+            pass
+    return redirect(url_for('realtek.index'))
 
 
 @bp.route('/<string:platform>/')

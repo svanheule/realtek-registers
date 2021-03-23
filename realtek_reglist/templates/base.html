@@ -32,22 +32,35 @@ header > *::after {
 header > *:last-child::after {
     content: "";
 }
-header a {
+header a, footer a {
     text-decoration: none;
     font-weight: bold;
 }
 article {
     padding: 0 1em 1em 1em;
 }
-article a {
+article a, footer a {
     text-decoration: none;
     color: #3465a4;
 }
-article a:hover, article a:active {
+article a:hover, article a:active, footer a:hover, footer a:active {
     color: #f57900;
 }
-.overview thead {
-    font-size: larger;
+body > footer {
+    font-size: smaller;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    text-align: right;
+    background: white;
+}
+body > footer p {
+    margin: 0.5em 1em 0.5em 0.2em;
+}
+body > footer a {
+    text-decoration: none;
 }
 .overview {
     margin: 0 auto;
@@ -55,6 +68,7 @@ article a:hover, article a:active {
     border-collapse: collapse;
 }
 .overview thead {
+    font-size: larger;
     background-color: white;
     position: sticky;
     top: 3em;
@@ -101,5 +115,12 @@ article a:hover, article a:active {
 {% block content %}
 {% endblock %}
 </article>
+<footer>
+<p>{% if current_user.is_authenticated %}
+{{ current_user.username }} <a href="{{ url_for('realtek.logout') }}">Log out</a>
+{% else %}
+<a href="{{ url_for('realtek.login') }}">Log in</a>
+{% endif %}</p>
+</footer>
 </body>
 </html>
