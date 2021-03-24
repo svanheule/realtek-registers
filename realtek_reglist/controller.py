@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
 from flask_login import current_user, login_user, logout_user
+from sqlalchemy.orm.exc import NoResultFound
 
 from .models import db
 from .models.auth import User
@@ -42,7 +43,8 @@ def github_logged_in(blueprint, token):
             user = query.one()
             login_user(user)
         except NoResultFound:
-            pass
+            # TODO Warn user on website that account is not known
+            print('Unknown Github user {}'.format(username))
     return redirect(url_for('realtek.index'))
 
 
