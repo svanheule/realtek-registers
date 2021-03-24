@@ -11,7 +11,7 @@ from .models.description import DescriptionRevision
 from .models.soc import Family, Feature, Register, Field, Table, TableField
 from .oauth import github_blueprint
 
-bp = Blueprint('realtek', __name__)
+bp = Blueprint('realtek', __name__, static_folder='static')
 
 
 @bp.route('/')
