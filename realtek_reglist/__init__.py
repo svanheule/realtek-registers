@@ -11,7 +11,8 @@ from .oauth import github_blueprint
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///realtek-register.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.environb.get(b'SECRET_KEY')
+
+app.config.from_object('config')
 
 migrate = Migrate(app, db)
 
