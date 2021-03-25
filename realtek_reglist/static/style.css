@@ -33,6 +33,7 @@ header a, footer a {
 }
 article {
     padding: 0 1em 1em 1em;
+    margin-bottom: 2em;
 }
 article a, footer a {
     text-decoration: none;
