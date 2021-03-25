@@ -63,6 +63,10 @@ class Register(DescriptionMixin, db.Model):
     description_revisions = db.relationship('DescriptionRevision',
             secondary=register_description, order_by='DescriptionRevision.timestamp')
 
+    tables = db.relationship('Table',
+        primaryjoin='or_(Register.id == Table.ctrl_register_id, Register.id == Table.data_register_id)',
+        order_by='Table.name')
+
     def __repr__(self):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
 

@@ -34,6 +34,15 @@
 {% endif %}
 {% endif %}
 
+{% if register.tables %}
+<h3>Control tables</h3>
+<ul>
+{% for table in register.tables %}
+<li><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name) | lower }}">{{ table.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
 <h3>Fields</h3>
 <table class="fieldlist">
 <thead>
