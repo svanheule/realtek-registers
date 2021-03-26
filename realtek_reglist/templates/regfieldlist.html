@@ -13,7 +13,7 @@
     <dt>Register name</dt><dd>{{ register.name }}</dd>
     <dt>Register offset</dt><dd>{{ "%04x" | format(register.offset) }}</dd>
     <dt>Feature</dt>
-    <dd><a href="{{ url_for('realtek.reglist', platform=platform, feature=register.feature.name) | lower }}">{{ register.feature.name }}</a></dd>
+    <dd><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=register.feature.name) | lower }}">{{ register.feature.name }}</a></dd>
     {% if register.port_idx_max > 0 %}
     <dt>Port index range</dt><dd>{{ "%d - %d" | format(register.port_idx_min, register.port_idx_max) }}</dd>
     {% endif %}

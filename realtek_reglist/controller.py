@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
 from flask_login import current_user, login_user, logout_user
+from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 
 from .models import db
@@ -49,27 +50,56 @@ def github_logged_in(blueprint, token):
 
 
 @bp.route('/<string:platform>/')
-@bp.route('/<string:platform>/feature/<string:feature>')
-def reglist(platform=None, feature=None):
-    if platform is not None and feature is not None:
-        query = db.session.query(Register)\
-            .join(Register.feature)\
-            .join(Register.family)\
-            .filter(Family.name == platform, Feature.name == feature.upper())
-    elif platform is not None:
-        query = db.session.query(Register)\
-            .join(Register.family)\
-            .filter(Family.name == platform)
-    else:
-        abort(400)
+def reglist(platform):
+    query = db.session.query(Register)\
+        .join(Register.family)\
+        .filter(Family.name == platform)
 
     if query.count() == 0:
         abort(404)
 
     registers = query.order_by(Register.offset).all()
 
-    return render_template('reglist.html', platform=platform, feature=feature,
-            register_list=registers)
+    return render_template('reglist.html', platform=platform, registers=registers)
+
+@bp.route('/<string:platform>/feature/')
+def featurelist(platform):
+    subquery_table_count = db.session.query(func.count(Table.id))\
+            .join(Table.family)\
+            .filter(Family.name == platform)
+    subquery_register_count = db.session.query(func.count(Register.id))\
+            .join(Register.family)\
+            .filter(Family.name == platform)
+    query = db.session.query(
+            Feature,
+            subquery_register_count.filter(Register.feature_id == Feature.id).label('register_count'),
+            subquery_table_count.filter(Table.feature_id == Feature.id).label('table_count')
+        )\
+        .join(Feature.family)\
+        .filter(Family.name == platform)\
+        .order_by(Feature.name.desc())
+
+    if query.count() == 0:
+        abort(404)
+
+    return render_template('featurelist.html', platform=platform, features=query.all())
+
+@bp.route('/<string:platform>/feature/<string:feature>')
+def featuredetail(platform, feature):
+    query_tables = db.session.query(Table)\
+            .join(Table.feature)\
+            .join(Table.family)\
+            .filter(Family.name == platform, Feature.name == feature.upper())
+    query_registers = db.session.query(Register)\
+            .join(Register.feature)\
+            .join(Register.family)\
+            .filter(Family.name == platform, Feature.name == feature.upper())
+
+    if query_tables.count() == 0 and query_registers.count() == 0:
+        abort(404)
+
+    return render_template('featuredetail.html', platform=platform, feature=feature,
+            registers=query_registers.all(), tables=query_tables.all())
 
 
 @bp.route('/<string:platform>/register/<string:register>')
