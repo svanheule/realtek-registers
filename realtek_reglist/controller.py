@@ -119,7 +119,7 @@ def regfieldlist(platform, register):
     query = db.session.query(Register)\
             .join(Register.family)\
             .filter(Family.name == platform, Register.name == register.upper())
-    register = query.first()
+    register = query.one()
 
     return render_template('regfieldlist.html', platform=platform,
             register=register, field_list=rows)
@@ -158,7 +158,7 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
     if query.count() == 0:
         abort(404)
 
-    item = query.first()
+    item = query.one()
 
     if request.method == 'POST':
         user = current_user
@@ -204,7 +204,7 @@ def tablefieldlist(platform, table):
     query = db.session.query(Table)\
             .join(Table.family)\
             .filter(Family.name == platform, Table.name == table.upper())
-    table = query.first()
+    table = query.one()
 
     return render_template('tablefieldlist.html', platform=platform,
             table=table, field_list=rows)

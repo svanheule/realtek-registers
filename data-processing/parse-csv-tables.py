@@ -35,7 +35,7 @@ for fam_id,fam_name in soc_families.items():
                 db.session.commit()
             reg_name_match = reg_name_prog.match(reg_name)
             db.session.add(Register(family_id=fam_id, name=reg_name_match.group(1),
-                    feature_id=Feature.query.filter_by(family_id=fam_id, name=feature).first().id,
+                    feature_id=Feature.query.filter_by(family_id=fam_id, name=feature).one().id,
                     offset=int(offset, 16), port_idx_min=port_idx_lo, port_idx_max=port_idx_hi,
                         array_idx_min=array_idx_lo, array_idx_max=array_idx_hi,
                         portlist_idx=portlist_idx, bit_offset=bit_offset))
@@ -56,6 +56,6 @@ for fam_id,fam_name in soc_families.items():
             reg_name_match = reg_name_prog.match(reg_name)
             field_name_match = field_name_prog.match(field_name)
             db.session.add(Field(
-                register=Register.query.filter_by(family_id=fam_id, name=reg_name_match.group(1)).first(),
+                register=Register.query.filter_by(family_id=fam_id, name=reg_name_match.group(1)).one(),
                 name=field_name_match.group(1), lsb=lsb, size=field_len))
         db.session.commit()
