@@ -1,0 +1,27 @@
+<section>
+<h3>Tables</h3>
+<table class="overview">
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Size</th>
+    <th>Access type</th>
+    <th>Control</th>
+    <th>Data</th>
+</tr>
+</thead>
+<tbody>
+{% for table in tables %}
+<tr>
+    <td><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name.lower()) }}">{{ table.name }}</a></td>
+    <td class="num">{{ table.size }}</td>
+    <td class="num">{{ table.access_type }}</td>
+    <td><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
+            {{ table.ctrl_register.name }}</a></td>
+    <td><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">
+            {{ table.data_register.name }}</a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</section>
