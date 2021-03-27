@@ -53,12 +53,13 @@ def github_logged_in(blueprint, token):
 def reglist(platform):
     query = db.session.query(Register)\
         .join(Register.family)\
-        .filter(Family.name == platform)
+        .filter(Family.name == platform)\
+        .order_by(Register.offset)
 
     if query.count() == 0:
         abort(404)
 
-    registers = query.order_by(Register.offset).all()
+    registers = query.all()
 
     return render_template('reglist.html', platform=platform, registers=registers)
 
@@ -77,7 +78,7 @@ def featurelist(platform):
         )\
         .join(Feature.family)\
         .filter(Family.name == platform)\
-        .order_by(Feature.name.desc())
+        .order_by(Feature.name)
 
     if query.count() == 0:
         abort(404)
@@ -89,11 +90,13 @@ def featuredetail(platform, feature):
     query_tables = db.session.query(Table)\
             .join(Table.feature)\
             .join(Table.family)\
-            .filter(Family.name == platform, Feature.name == feature.upper())
+            .filter(Family.name == platform, Feature.name == feature.upper())\
+            .order_by(Table.name)
     query_registers = db.session.query(Register)\
             .join(Register.feature)\
             .join(Register.family)\
-            .filter(Family.name == platform, Feature.name == feature.upper())
+            .filter(Family.name == platform, Feature.name == feature.upper())\
+            .order_by(Register.offset)
 
     if query_tables.count() == 0 and query_registers.count() == 0:
         abort(404)
