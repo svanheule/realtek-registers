@@ -3,8 +3,10 @@ from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import func
+from sqlalchemy import asc, func
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.expression import label
+from sqlalchemy.sql.functions import coalesce
 
 from .models import db
 from .models.auth import User
@@ -49,12 +51,25 @@ def github_logged_in(blueprint, token):
     return redirect(url_for('realtek.index'))
 
 
+def query_platform_registers(platform, feature=None):
+    q = db.session.query(Register).join(Register.family)
+    if feature is not None:
+        q = q.join(Register.feature).filter(Feature.name == feature.upper())
+
+    return q.filter(Family.name == platform).order_by(Register.offset)
+
+
+def query_platform_tables(platform, feature=None):
+    q = db.session.query(Table).join(Table.family)
+    if feature is not None:
+        q = q.join(Table.feature).filter(Feature.name == feature.upper())
+
+    return q.filter(Family.name == platform).order_by(Table.name)
+
+
 @bp.route('/<string:platform>/')
 def reglist(platform):
-    query = db.session.query(Register)\
-        .join(Register.family)\
-        .filter(Family.name == platform)\
-        .order_by(Register.offset)
+    query = query_platform_registers(platform)
 
     if query.count() == 0:
         abort(404)
@@ -85,18 +100,11 @@ def featurelist(platform):
 
     return render_template('featurelist.html', platform=platform, features=query.all())
 
+
 @bp.route('/<string:platform>/feature/<string:feature>')
 def featuredetail(platform, feature):
-    query_tables = db.session.query(Table)\
-            .join(Table.feature)\
-            .join(Table.family)\
-            .filter(Family.name == platform, Feature.name == feature.upper())\
-            .order_by(Table.name)
-    query_registers = db.session.query(Register)\
-            .join(Register.feature)\
-            .join(Register.family)\
-            .filter(Family.name == platform, Feature.name == feature.upper())\
-            .order_by(Register.offset)
+    query_tables = query_platform_tables(platform, feature)
+    query_registers = query_platform_registers(platform, feature)
 
     if query_tables.count() == 0 and query_registers.count() == 0:
         abort(404)
@@ -179,8 +187,7 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
 
 @bp.route('/<string:platform>/table')
 def tablelist(platform):
-    query = db.session.query(Table).join(Table.family)\
-            .filter(Family.name == platform).order_by(Table.name.asc())
+    query = query_platform_tables(platform)
 
     if query.count() == 0:
         abort(404)
