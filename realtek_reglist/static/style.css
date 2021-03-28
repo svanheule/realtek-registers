@@ -69,9 +69,15 @@ body > footer a {
     top: 3em;
     text-align: left;
 }
-.overview th, .fieldlist th {
+.overview thead th, .fieldlist thead th {
     padding: 0.3em 0.3em;
     min-width: 3em;
+    text-align: center;
+}
+.overview tbody th {
+    text-align: left;
+    border-bottom: 1px solid #aaa;
+    padding-top: 0.5em;
 }
 .overview td, .fieldlist td {
     padding: 0.25em 0.3em;
