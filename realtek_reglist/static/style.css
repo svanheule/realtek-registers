@@ -103,3 +103,6 @@ body > footer a {
 .fieldlist td {
     vertical-align: top;
 }
+.hexnum {
+    font-family: monospace;
+}

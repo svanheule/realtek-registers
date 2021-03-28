@@ -8,10 +8,11 @@
 {% endblock %}
 {% block content %}
 {{ super() }}
+{{ register | breadcrumbs }}
 <h3>Details</h3>
 <dl>
     <dt>Register name</dt><dd>{{ register.name }}</dd>
-    <dt>Register offset</dt><dd>{{ "%04x" | format(register.offset) }}</dd>
+    <dt>Register offset</dt><dd class="hexnum">{{ "%04x" | format(register.offset) }}</dd>
     <dt>Feature</dt>
     <dd><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=register.feature.name) | lower }}">{{ register.feature.name }}</a></dd>
     {% if register.port_idx_max > 0 %}

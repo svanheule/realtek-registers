@@ -18,7 +18,7 @@
 </th></tr>
 {% endif -%}
 <tr>
-    <td class="num">{{ "%04x" | format(reg.offset) }}</td>
+    <td class="hexnum">{{ "%04x" | format(reg.offset) }}</td>
     <td><a href="{{ url_for('realtek.regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
 </tr>
 {% endfor -%}
