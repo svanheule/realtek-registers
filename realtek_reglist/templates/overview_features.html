@@ -11,7 +11,7 @@
 <tbody>
 {% for feature in features %}
 <tr>
-    <td><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=feature[0].name) | lower }}">{{ feature[0].name }}</a></td>
+    <td><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=feature.name) | lower }}">{{ feature.name }}</a></td>
     <td class="num">{{ feature.register_count }}</td>
     <td class="num">{{ feature.table_count }}</td>
 </tr>

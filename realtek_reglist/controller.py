@@ -80,17 +80,23 @@ def reglist(platform):
 
 @bp.route('/<string:platform>/feature/')
 def featurelist(platform):
-    subquery_table_count = db.session.query(func.count(Table.id))\
-            .join(Table.family)\
-            .filter(Family.name == platform)
-    subquery_register_count = db.session.query(func.count(Register.id))\
-            .join(Register.family)\
-            .filter(Family.name == platform)
+    table_counts = db.session.query(
+                Table.feature_id,
+                func.count(Table.id).label('count')
+            )\
+            .group_by(Table.feature_id).subquery()
+    register_counts = db.session.query(
+                Register.feature_id,
+                func.count(Register.id).label('count')
+            )\
+            .group_by(Register.feature_id).subquery()
     query = db.session.query(
-            Feature,
-            subquery_register_count.filter(Register.feature_id == Feature.id).label('register_count'),
-            subquery_table_count.filter(Table.feature_id == Feature.id).label('table_count')
+            Feature.name.label('name'),
+            label('table_count', coalesce(table_counts.c.count, 0)),
+            label('register_count', coalesce(register_counts.c.count, 0))
         )\
+        .outerjoin(table_counts, table_counts.c.feature_id == Feature.id)\
+        .outerjoin(register_counts, register_counts.c.feature_id == Feature.id)\
         .join(Feature.family)\
         .filter(Family.name == platform)\
         .order_by(Feature.name)
