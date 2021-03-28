@@ -16,7 +16,6 @@
 <tr><th colspan="2">
         <a href="{{ url_for('realtek.featuredetail', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a>
 </th></tr>
-<tbody>
 {% endif -%}
 <tr>
     <td class="num">{{ "%04x" | format(reg.offset) }}</td>
