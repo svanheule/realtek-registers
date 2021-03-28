@@ -171,9 +171,12 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
     if request.method == 'POST':
         user = current_user
         if not user.is_anonymous and  user.is_active:
-            d = DescriptionRevision(author=user, value=request.form['description'].strip())
-            item.description_revisions.append(d)
-            db.session.commit()
+            old_value = item.description
+            new_value = request.form['description'].strip()
+            if old_value != new_value:
+                d = DescriptionRevision(author=user, value=new_value)
+                item.description_revisions.append(d)
+                db.session.commit()
         if itemtype == 'register':
             return redirect(url_for('realtek.regfieldlist', platform=platform, register=itemname))
         elif itemtype == 'table':
