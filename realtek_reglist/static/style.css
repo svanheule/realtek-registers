@@ -91,17 +91,35 @@ body > footer a {
 .fieldlist {
     border-collapse: collapse;
 }
-.fieldlist td p {
+.fieldlist .description p {
     margin: 0.5em 0;
 }
-.fieldlist td p:first-child {
+.fieldlist .description p:first-child {
     margin-top: 0;
 }
-.fieldlist td p:last-child {
+.fieldlist .description p:last-child {
     margin-bottom: 0;
 }
 .fieldlist td {
     vertical-align: top;
+}
+.fieldlist .editable {
+    position: relative;
+}
+.fieldlist .editable .edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.4;
+    font-size: small;
+    background: white;
+    border-radius: 2px;
+    border: 1px solid gray;
+    padding: 0.1em 0.2em;
+    margin: 0.2em;
+}
+.fieldlist .editable .edit:hover {
+    opacity: 1;
 }
 .hexnum {
     font-family: monospace;

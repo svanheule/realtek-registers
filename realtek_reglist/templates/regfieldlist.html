@@ -52,12 +52,12 @@
     <td>{{ field.name | upper }}</td>
     <td class="num">{{ "%d" | format(field.lsb) }}</td>
     <td class="num">{{ "%d" | format(field.size) }}</td>
-    <td>
-        {{ field.description | markdown }}
+    <td class="editable">
+        <div class="description">{{ field.description | markdown }}</div>
         {% if current_user.is_authenticated %}
-        <p class="edit"><a href="{{
+        <div class="edit"><a href="{{
             url_for('realtek.description_edit', platform=platform, itemtype='register', itemname=register.name, itemfield=field.name) | lower
-            }}">Edit</a></p>
+            }}">Edit</a></div>
         {% endif %}
     </td>
 </tr>
