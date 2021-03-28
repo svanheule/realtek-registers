@@ -52,7 +52,7 @@
     <td>{{ field.name | upper }}</td>
     <td class="num">{{ "%d" | format(field.lsb) }}</td>
     <td class="num">{{ "%d" | format(field.size) }}</td>
-    <td class="editable">
+    <td>
         <div class="description">
         {% if current_user.is_authenticated -%}
         <div class="edit"><a href="{{
