@@ -2,14 +2,15 @@ import datetime
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from . import db
+from .auth import User
 
 class DescriptionRevision(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     value = db.Column(db.Text, nullable=False)
 
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    author = db.relationship('User', backref=db.backref('contributions', lazy=True))
+    author_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    author = db.relationship(User, backref=db.backref('contributions', lazy=True))
 
 
 class DescriptionMixin:
