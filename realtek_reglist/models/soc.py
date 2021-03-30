@@ -1,26 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from . import db
-from .description import DescriptionMixin
-
-# Description linking tables
-register_description = db.Table('register_description',
-    db.Column('register_id', db.ForeignKey('register.id'), nullable=False),
-    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
-)
-field_description = db.Table('field_description',
-    db.Column('field_id', db.ForeignKey('field.id'), nullable=False),
-    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
-)
-table_description = db.Table('table_description',
-    db.Column('register_id', db.ForeignKey('table.id'), nullable=False),
-    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
-)
-table_field_description = db.Table('table_field_description',
-    db.Column('table_field_id', db.ForeignKey('table_field.id'), nullable=False),
-    db.Column('revision_id', db.ForeignKey('description_revision.id'), nullable=False)
-)
-
+from .description import DescribedObject
 
 class Family(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,9 +23,9 @@ class Feature(db.Model):
         return '<Feature {}/{}>'.format(self.family.name, self.name)
 
 
-class Register(DescriptionMixin, db.Model):
+class Register(DescribedObject):
     __table_args__ = (db.UniqueConstraint('family_id', 'name', name='u_family_register'),)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
     name = db.Column(db.Text, nullable=False)
     offset = db.Column(db.Integer, nullable=False)
     port_idx_min = db.Column(db.Integer, nullable=False)
@@ -60,38 +41,40 @@ class Register(DescriptionMixin, db.Model):
     feature_id = db.Column(db.Integer, db.ForeignKey('feature.id'), nullable=False)
     feature = db.relationship('Feature', backref=db.backref('registers', lazy=True))
 
-    description_revisions = db.relationship('DescriptionRevision',
-            secondary=register_description, order_by='DescriptionRevision.timestamp')
-
     tables = db.relationship('Table',
         primaryjoin='or_(Register.id == Table.ctrl_register_id, Register.id == Table.data_register_id)',
         order_by='Table.name')
+
+    __mapper_args__ = {
+        'polymorphic_identity' : 'register',
+    }
 
     def __repr__(self):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
 
 
-class Field(DescriptionMixin, db.Model):
+class Field(DescribedObject):
     __table_args__ = (db.UniqueConstraint('register_id', 'lsb', name='u_register_field'),)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
     name = db.Column(db.Text, nullable=False)
     lsb = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
 
-    register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
-    register = db.relationship('Register', backref=db.backref('fields', lazy=True))
+    register_id = db.Column(db.Integer, db.ForeignKey(Register.id), nullable=False)
+    register = db.relationship(Register, backref=db.backref('fields', lazy=True), foreign_keys=[register_id])
 
-    description_revisions = db.relationship('DescriptionRevision',
-            secondary=field_description, order_by='DescriptionRevision.timestamp')
+    __mapper_args__ = {
+        'polymorphic_identity' : 'field',
+    }
 
     def __repr__(self):
         return '<Field {}/{}/{} : {}+{}>'.format(self.register.family.name,
                 self.register.name, self.name, self.lsb, self.size)
 
 
-class Table(DescriptionMixin, db.Model):
+class Table(DescribedObject):
     __table_args__ = (db.UniqueConstraint('family_id', 'name', name='u_family_table'),)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
     name = db.Column(db.Text, nullable=False)
     access_type = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
@@ -107,26 +90,28 @@ class Table(DescriptionMixin, db.Model):
     data_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
     data_register = db.relationship('Register', foreign_keys=data_register_id)
 
-    description_revisions = db.relationship('DescriptionRevision',
-            secondary=table_description, order_by='DescriptionRevision.timestamp')
+    __mapper_args__ = {
+        'polymorphic_identity' : 'table',
+    }
 
     def __repr__(self):
         fam_name = self.family.name
         return '<Table {}/{} : ctrl={}>'.format(fam_name, self.name, self.ctrl_register)
 
 
-class TableField(DescriptionMixin, db.Model):
+class TableField(DescribedObject):
     __table_args__ = (db.UniqueConstraint('table_id', 'lsb', name='u_table_field'),)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
     name = db.Column(db.Text, nullable=False)
     lsb = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
 
-    table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=False)
-    table = db.relationship('Table', backref=db.backref('fields', lazy=True))
+    table_id = db.Column(db.Integer, db.ForeignKey(Table.id), nullable=False)
+    table = db.relationship('Table', backref=db.backref('fields', lazy=True), foreign_keys=[table_id])
 
-    description_revisions = db.relationship('DescriptionRevision',
-            secondary=table_field_description, order_by='DescriptionRevision.timestamp')
+    __mapper_args__ = {
+        'polymorphic_identity' : 'table_field',
+    }
 
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,

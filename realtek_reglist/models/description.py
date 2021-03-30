@@ -12,8 +12,19 @@ class DescriptionRevision(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     author = db.relationship(User, backref=db.backref('contributions', lazy=True))
 
+    object_id = db.Column(db.Integer, db.ForeignKey('described_object.id'), nullable=False)
+    object = db.relationship('DescribedObject', backref=db.backref('description_revisions', lazy=True))
 
-class DescriptionMixin:
+    def __repr__(self):
+        return f'<DescriptionRevision [{self.author.username} @ {self.timestamp}] {self.object}>'
+
+class DescribedObject(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.Text, nullable=False)
+
+    #description_revisions = db.relationship('description_revision', back_populates='object')
+
+    # TODO Create a query that selects the latest revision, and can be used as a subquery
     @hybrid_property
     def description(self):
         if len(self.description_revisions) > 0:
@@ -22,3 +33,7 @@ class DescriptionMixin:
             return ''
 
 
+    __mapper_args__ = {
+        'polymorphic_on' : type,
+        'polymorphic_identity' : 'described_object',
+    }
