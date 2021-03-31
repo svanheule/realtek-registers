@@ -1,5 +1,7 @@
 import datetime
+from sqlalchemy import func, select
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import aliased
 
 from . import db
 from .auth import User
@@ -36,6 +38,20 @@ class DescribedObject(db.Model):
         else:
             return ''
 
+    @description.expression
+    def description(cls):
+        # FIXME Doesn't return (empty string) when no description is found
+        dr_dates = aliased(DescriptionRevision)
+        last_revisions = db.session.query(
+                    dr_dates.object_id.label('id'),
+                    func.max(dr_dates.timestamp).label('timestamp_last')
+                )\
+                .group_by(dr_dates.object_id)\
+                .subquery()
+        return db.session.query(func.coalesce(DescriptionRevision.value, ''))\
+                .join(last_revisions, last_revisions.c.id == DescriptionRevision.object_id)\
+                .filter(DescriptionRevision.timestamp == last_revisions.c.timestamp_last)\
+                .filter(DescriptionRevision.object_id == cls.id)
 
     __mapper_args__ = {
         'polymorphic_on' : type,
