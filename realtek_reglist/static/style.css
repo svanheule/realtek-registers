@@ -94,13 +94,13 @@ body > footer a {
 .fieldlist .description {
     min-width: 20em;
 }
-.fieldlist .description p {
+.inline-description > * {
     margin: 0.5em 0;
 }
-.fieldlist .description p:first-of-type {
+.inline-description > *:first-child {
     margin-top: 0;
 }
-.fieldlist .description p:last-of-type {
+.inline-description > *:last-child {
     margin-bottom: 0;
 }
 .fieldlist td {
