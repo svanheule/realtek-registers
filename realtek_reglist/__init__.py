@@ -25,3 +25,24 @@ app.register_blueprint(github_blueprint, url_prefix='/realtek/login')
 @app.template_filter('markdown')
 def markdown_filter(s):
     return Markup(markdown.markdown(s, extensions=['sane_lists', 'smarty'], output_format='html5'))
+
+MAX_SUMMARY_LENGTH = 70
+
+@app.template_filter('summary')
+def summary_filter(s):
+    if s:
+        first_line = s.splitlines()[0]
+        if len(first_line) <= MAX_SUMMARY_LENGTH:
+            return first_line
+        first_phrase =  first_line.split('. ', maxsplit=1)[0]
+        if len(first_phrase) <= MAX_SUMMARY_LENGTH:
+            return first_phrase + '.'
+        while len(first_line) > MAX_SUMMARY_LENGTH:
+            shortened = first_line.rsplit(maxsplit=1)[0]
+            if len(shortened) == len(first_line):
+                return first_line
+            else:
+                first_line = shortened
+        return first_line + ' ...'
+    else:
+        return ''
