@@ -34,15 +34,12 @@ def summary_filter(s):
         first_line = s.splitlines()[0]
         if len(first_line) <= MAX_SUMMARY_LENGTH:
             return first_line
-        first_phrase =  first_line.split('. ', maxsplit=1)[0]
-        if len(first_phrase) <= MAX_SUMMARY_LENGTH:
-            return first_phrase + '.'
-        while len(first_line) > MAX_SUMMARY_LENGTH:
-            shortened = first_line.rsplit(maxsplit=1)[0]
-            if len(shortened) == len(first_line):
-                return first_line
-            else:
-                first_line = shortened
-        return first_line + ' ...'
+        # Shorten line up to max length + phrase delimiter length
+        first_line = first_line[:MAX_SUMMARY_LENGTH + 2]
+        phrase_split = first_line.split('. ', maxsplit=1)
+        if len(phrase_split) == 2:
+            return phrase_split[0] + '.'
+        # Shorten in the least clean way
+        return first_line.rsplit(maxsplit=1)[0] + ' ...'
     else:
         return ''
