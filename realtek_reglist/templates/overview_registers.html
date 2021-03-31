@@ -5,21 +5,23 @@
 <tr>
     <th>Offset</th>
     <th>Name</th>
+    <th>Description</th>
 </tr>
 </thead>
 {%- for reg in registers -%}
-{% if loop.previtem is not defined or loop.previtem.feature.name != reg.feature.name -%}
+{% if loop.previtem is not defined or loop.previtem.feature_name != reg.feature_name -%}
 {% if not loop.previtem is not defined -%}
 </tbody>
 {% endif -%}
 <tbody>
-<tr><th colspan="2">
-        <a href="{{ url_for('realtek.featuredetail', platform=reg.family.name, feature=reg.feature.name) | lower }}">{{ reg.feature.name }}</a>
+<tr><th colspan="3">
+        <a href="{{ url_for('realtek.featuredetail', platform=platform, feature=reg.feature_name) | lower }}">{{ reg.feature_name }}</a>
 </th></tr>
 {% endif -%}
 <tr>
     <td class="hexnum">{{ "%04x" | format(reg.offset) }}</td>
-    <td><a href="{{ url_for('realtek.regfieldlist', platform=reg.family.name, register=reg.name) | lower }}">{{ reg.name }}</a></td>
+    <td><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=reg.name) | lower }}">{{ reg.name }}</a></td>
+    <td><div class="inline-description">{{ reg.description | summary | markdown }}</div></td>
 </tr>
 {% endfor -%}
 </tbody>

@@ -52,9 +52,14 @@ def github_logged_in(blueprint, token):
 
 
 def query_platform_registers(platform, feature=None):
-    q = db.session.query(Register).join(Register.family)
+    q = db.session.query(
+            Register.offset.label('offset'),
+            Feature.name.label('feature_name'),
+            Register.name.label('name'),
+            Register.description.label('description')
+        ).join(Register.family).join(Register.feature)
     if feature is not None:
-        q = q.join(Register.feature).filter(Feature.name == feature.upper())
+        q = q.filter(Feature.name == feature.upper())
 
     return q.filter(Family.name == platform).order_by(Register.offset)
 
