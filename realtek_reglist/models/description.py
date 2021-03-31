@@ -16,7 +16,11 @@ class DescriptionRevision(db.Model):
     object = db.relationship('DescribedObject', backref=db.backref('description_revisions', lazy=True))
 
     def __repr__(self):
-        return f'<DescriptionRevision [{self.author.username} @ {self.timestamp}] {self.object}>'
+        return '<DescriptionRevision [{} @ {}] {}>'.format(
+                self.author.username,
+                self.timestamp,
+                self.object
+            )
 
 class DescribedObject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
