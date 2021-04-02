@@ -65,11 +65,11 @@ def query_platform_registers(platform, feature=None):
 
 
 def query_platform_tables(platform, feature=None):
-    q = db.session.query(Table).join(Table.family)
+    q = db.session.query(Table).join(Table.family).join(Table.ctrl_register)
     if feature is not None:
         q = q.join(Table.feature).filter(Feature.name == feature.upper())
 
-    return q.filter(Family.name == platform).order_by(Table.name)
+    return q.filter(Family.name == platform).order_by(Register.name, Table.access_type, Table.name)
 
 
 @bp.route('/<string:platform>/')

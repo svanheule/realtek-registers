@@ -6,20 +6,20 @@
     <th>Name</th>
     <th>Size</th>
     <th>Access type</th>
-    <th>Control</th>
-    <th>Data</th>
+    <th>Summary</th>
 </tr>
 </thead>
+{% for table in tables -%}
+{% if loop.previtem is undefined or loop.previtem.ctrl_register.name != table.ctrl_register.name -%}
 <tbody>
-{% for table in tables %}
+<tr><th colspan="4"><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
+            {{ table.ctrl_register.name }}</a></th></tr>
+{%- endif %}
 <tr>
     <td><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name.lower()) }}">{{ table.name }}</a></td>
     <td class="num">{{ table.size }}</td>
     <td class="num">{{ table.access_type }}</td>
-    <td><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
-            {{ table.ctrl_register.name }}</a></td>
-    <td><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">
-            {{ table.data_register.name }}</a></td>
+    <td class="inline-description">{{ table.description | summary | markdown }}</td>
 </tr>
 {% endfor %}
 </tbody>

@@ -86,9 +86,9 @@ class Table(DescribedObject):
     feature = db.relationship('Feature', backref=db.backref('tables', lazy=True))
 
     ctrl_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
-    ctrl_register = db.relationship('Register', foreign_keys=ctrl_register_id)
+    ctrl_register = db.relationship('Register', foreign_keys=ctrl_register_id, lazy=False)
     data_register_id = db.Column(db.Integer, db.ForeignKey('register.id'), nullable=False)
-    data_register = db.relationship('Register', foreign_keys=data_register_id)
+    data_register = db.relationship('Register', foreign_keys=data_register_id, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity' : 'table',
