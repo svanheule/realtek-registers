@@ -3,7 +3,7 @@
 {%- endmacro -%}
 
 {% macro link_to_register_field(platform, field) -%}
-<a href="{{ url_for('realtek.regfieldlist', platform=platform, register=field.register) | lower }}">{{ field.register.name }}/{{ field.name }}</a>
+<a href="{{ url_for('realtek.regfieldlist', platform=platform, register=field.register.name) | lower }}">{{ field.register.name }}/{{ field.name }}</a>
 {%- endmacro -%}
 
 {% macro link_to_table(platform, table) -%}
