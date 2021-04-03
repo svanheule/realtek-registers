@@ -1,0 +1,27 @@
+{% macro link_to_register(platform, register) -%}
+<a href="{{ url_for('realtek.regfieldlist', platform=platform, register=register.name) | lower }}">{{ register.name }}</a>
+{%- endmacro -%}
+
+{% macro link_to_register_field(platform, field) -%}
+<a href="{{ url_for('realtek.regfieldlist', platform=platform, register=field.register) | lower }}">{{ field.register.name }}/{{ field.name }}</a>
+{%- endmacro -%}
+
+{% macro link_to_table(platform, table) -%}
+<a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name) | lower }}">{{ table.name }}</a>
+{%- endmacro -%}
+
+{% macro link_to_table_field(platform, field) -%}
+<a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=field.table.name) | lower }}">{{ field.table.name}}/{{ field.name }}</a>
+{%- endmacro -%}
+
+{% macro link_to_described(object) -%}
+{% if object.type == 'register' -%}
+{{ link_to_register(object.family.name, object) }}
+{% elif object.type == 'field' -%}
+{{ link_to_register_field(object.register.family.name, object) }}
+{% elif object.type == 'table' -%}
+{{ link_to_table(object.family.name, object) }}
+{% elif object.type == 'table_field' -%}
+{{ link_to_table_field(object.table.family.name, object) }}
+{% endif -%}
+{%- endmacro -%}
