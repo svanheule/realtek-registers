@@ -3,14 +3,15 @@ from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import asc, func
+from sqlalchemy import asc, desc, func
+from sqlalchemy.orm import aliased, with_polymorphic
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import label
 from sqlalchemy.sql.functions import coalesce
 
 from .models import db
 from .models.auth import User
-from .models.description import DescriptionRevision
+from .models.description import DescriptionRevision, DescribedObject
 from .models.soc import Family, Feature, Register, Field, Table, TableField
 from .oauth import github_blueprint
 
@@ -19,8 +20,22 @@ bp = Blueprint('realtek', __name__, static_folder='static')
 
 @bp.route('/')
 def index():
+    dynamic_object = with_polymorphic(
+        DescribedObject,
+        [Register, Field, Table, TableField]
+    )
+
     families = Family.query.order_by(Family.id).all()
-    return render_template('index.html', families=families)
+    dr = aliased(DescriptionRevision)
+    last_updates = db.session.query(
+            dr.object_id.label('object_id'),
+            func.max(dr.timestamp).label('last_update'),
+        ).group_by(dr.object_id).subquery()
+    recently_changed = db.session.query(last_updates.c.last_update, dynamic_object, dynamic_object.description)\
+            .join(last_updates, dynamic_object.id == last_updates.c.object_id)\
+            .order_by(desc(last_updates.c.last_update)).limit(15)
+
+    return render_template('index.html', families=families, recently_changed=recently_changed)
 
 @bp.route('/github')
 def login():

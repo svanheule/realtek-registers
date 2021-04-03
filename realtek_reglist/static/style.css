@@ -134,3 +134,6 @@ body > footer a {
 .hexnum {
     font-family: monospace;
 }
+.timestamp[title] {
+    text-decoration: dotted underline;
+}
