@@ -16,14 +16,14 @@
 </li>
 {% endfor %}
 </ul>
-{% if recently_changed %}
+{% if recently_changed -%}
 <h3>Recent changes</h3>
 <ul>
-{% for obj in recently_changed %}
-<li>{{ linkto.link_to_described(obj[1])}}
+{% for obj in recently_changed -%}
+<li>{{ linkto.link_to_described(obj[1]) }}
     on <span class="timestamp" title="{{ obj[0].strftime('%Y-%m-%d %H:%M:%S')}} (UTC)">{{ obj[0].date().isoformat() }}</span>
 </li>
-{% endfor %}
+{% endfor -%}
 </ul>
-{% endif %}
+{% endif -%}
 {% endblock %}
