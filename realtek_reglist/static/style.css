@@ -84,6 +84,11 @@ body > footer a {
 .overview td, .fieldlist td {
     padding: 0.25em 0.3em;
 }
+.overview tbody tr, .fieldlist tbody tr {
+    border-color: #ddd;
+    border-style: solid;
+    border-width: 1px 0;
+}
 .overview tbody tr:nth-child(even), .fieldlist tbody tr:nth-child(even) {
     background-color: #eee;
 }
