@@ -196,7 +196,7 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
 
     if request.method == 'POST':
         user = current_user
-        if not user.is_anonymous and  user.is_active:
+        if not user.is_anonymous and user.is_active:
             old_value = item.description
             new_value = request.form['description'].strip()
             if old_value != new_value:
