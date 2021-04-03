@@ -8,7 +8,7 @@ Realtek - Edit description for {{ itemname | upper }}
 <form method="post" action="{{
     url_for('realtek.description_edit', platform=platform, itemtype=itemtype, itemname=itemname, itemfield=itemfield) | lower
 }}">
-<textarea name="description" style="width: 90%; min-height: 25em; display: block">{{ item.description }}</textarea>
+<textarea name="description" style="width: 90%; min-height: 25em; display: block">{{ item.description or '' }}</textarea>
 <input type="submit" value="Save">
 </form>
 {% if item.description_revisions %}
