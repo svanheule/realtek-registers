@@ -3,12 +3,8 @@
     Realtek - Register table {{ platform }}
     {% if feature %} - {{ feature }} {% endif %}
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>{{ platform }} register list{% if feature %}: {{ feature | upper }} {% endif %}</h2>
-{% endblock %}
-
 {% block content %}
 {{ super() }}
+<h2>{{ platform }} registers</h2>
 {% include 'overview_registers.html' %}
 {% endblock %}

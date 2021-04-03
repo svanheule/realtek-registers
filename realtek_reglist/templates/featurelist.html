@@ -2,12 +2,8 @@
 {% block title %}
 Realtek - Feature list {{ platform }}
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>{{ platform }} feature list</h2>
-{% endblock %}
-
 {% block content %}
 {{ super() }}
+<h2>{{ platform }} features</h2>
 {% include 'overview_features.html' %}
 {% endblock %}

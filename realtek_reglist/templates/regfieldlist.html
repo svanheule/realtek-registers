@@ -2,12 +2,9 @@
 {% block title %}
     Realtek - Register table {{platform }} - {{ register.name | upper }}
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>{{ platform }} register: {{ register.name | upper }}</h2>
-{% endblock %}
 {% block content %}
 {{ super() }}
+<h2>{{ platform }} register: {{ register.name | upper }}</h2>
 <h3>Details</h3>
 <dl>
     <dt>Register name</dt><dd>{{ register.name }}</dd>

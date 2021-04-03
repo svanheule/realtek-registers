@@ -2,12 +2,9 @@
 {% block title %}
     Realtek - Register docs
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>Platforms</h2>
-{% endblock %}
 {% block content %}
 {{ super() }}
+<h2>Platforms</h2>
 <ul>
 {% for family in families %}
 <li>{{ "RTL%04x" | format(family.id) }}: {{ family.name }}

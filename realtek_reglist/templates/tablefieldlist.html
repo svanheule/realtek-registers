@@ -2,12 +2,9 @@
 {% block title %}
     Realtek - Table info {{platform }} - {{ table.name | upper }}
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>{{ platform }} table: {{ table.name | upper }}</h2>
-{% endblock %}
 {% block content %}
 {{ super() }}
+<h2>{{ platform }} table: {{ table.name | upper }}</h2>
 <h3>Details</h3>
 <dl>
     <dt>Name</dt><dd>{{ table.name }}</dd>

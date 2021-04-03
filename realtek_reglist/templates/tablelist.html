@@ -2,12 +2,8 @@
 {% block title %}
     Realtek - Table list {{ platform }}
 {% endblock %}
-{% block header %}
-{{ super() }}
-<h2>{{ platform }} table list</h2>
-{% endblock %}
-
 {% block content %}
 {{ super() }}
+<h2>{{ platform }} tables</h2>
 {% include 'overview_tables.html' %}
 {% endblock %}
