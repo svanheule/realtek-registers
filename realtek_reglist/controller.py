@@ -182,9 +182,9 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
                 .join(Table.family)\
                 .filter(Family.name == platform, Table.name == itemname.upper())
         else:
-            query = db.session.query(Field)\
-                .join(Field.register)\
-                .join(Register.family)\
+            query = db.session.query(TableField)\
+                .join(TableField.table)\
+                .join(Table.family)\
                 .filter(Family.name == platform, Table.name == itemname.upper(), TableField.name == itemfield.upper())
     else:
         abort(404)
