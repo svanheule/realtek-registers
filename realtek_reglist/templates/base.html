@@ -12,6 +12,9 @@
 <h1><a href="{{ url_for('realtek.index') }}">Realtek switch SoC docs</a></h1>
 {% endblock %}
 </header>
+{% for category, message in get_flashed_messages(with_categories=True) -%}
+<div class="alert {{category}}"><p>{{ message }}</p></div>
+{% endfor -%}
 <article>
 {% block content %}
 {% endblock %}

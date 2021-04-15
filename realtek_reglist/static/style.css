@@ -137,3 +137,27 @@ body > footer a {
 .timestamp[title] {
     text-decoration: dotted underline;
 }
+.alert {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    margin: 1em;
+}
+.alert.info {
+    background-color: #3465a4;
+    border-color: #204a87;
+    color: white;
+}
+.alert.warning {
+    background-color: #edd400;
+    border-color: #c4a000;
+    color: #2e3436;
+}
+.alert.error {
+    background-color: #f57900;
+    border-color: #ce5c00;
+    color: white;
+}
+.alert > * {
+    margin: 0.5em;
+}
