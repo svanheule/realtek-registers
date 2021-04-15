@@ -1,4 +1,4 @@
-from flask import abort, render_template, request, redirect, url_for
+from flask import abort, flash, render_template, request, redirect, url_for
 from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
@@ -58,10 +58,12 @@ def github_logged_in(blueprint, token):
 
         query = User.query.filter_by(username=username)
         try:
+            flash('Your are now logged in as {}'.format(username), 'info')
             user = query.one()
             login_user(user)
         except NoResultFound:
-            # TODO Warn user on website that account is not known
+            flash('Hi, {}! Unfortunately you cannot log in here. '.format(username) +
+                    'Please contact the site admin if you would like to contribute.', 'warning')
             print('Unknown Github user {}'.format(username))
     return redirect(url_for('realtek.index'))
 
