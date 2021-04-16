@@ -4,6 +4,7 @@ import markdown
 import os
 
 from .controller import bp
+from .description.registerdoclink import RegisterDocLinkExtension
 from .models import db
 from .models.auth import login_manager
 from .oauth import github_blueprint
@@ -23,7 +24,7 @@ app.register_blueprint(bp, url_prefix='/realtek')
 app.register_blueprint(github_blueprint, url_prefix='/realtek/login')
 
 md = markdown.Markdown(
-        extensions=['sane_lists', 'smarty', 'meta'],
+        extensions=['sane_lists', 'smarty', 'meta', RegisterDocLinkExtension()],
         output_format='html5'
     )
 
