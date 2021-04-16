@@ -161,3 +161,21 @@ body > footer a {
 .alert > * {
     margin: 0.5em;
 }
+dl {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 670px;
+}
+dl > * {
+    margin: 0.2em 0;
+}
+dt {
+    width: 25%;
+    font-style: italic;
+    text-align: right;
+}
+dd {
+    width: 70%;
+    padding-left: 0.5em;
+}
