@@ -29,7 +29,7 @@
 {% if current_user.is_authenticated %}
 <p class="edit"><a href="{{
     url_for('realtek.description_edit', platform=platform, itemtype='register', itemname=register.name) | lower
-    }}">Edit</a></p>
+    }}">{% if register.description %}Edit{% else %}Create{% endif %}</a></p>
 {% endif %}
 {% endif %}
 

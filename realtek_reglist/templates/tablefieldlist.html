@@ -26,7 +26,7 @@
 {% if current_user.is_authenticated %}
 <p class="edit"><a href="{{
     url_for('realtek.description_edit', platform=platform, itemtype='table', itemname=table.name) | lower
-    }}">Edit</a></p>
+    }}">{% if table.description %}Edit{% else %}Create{% endif %}</a></p>
 {% endif %}
 {% endif %}
 
