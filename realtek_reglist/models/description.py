@@ -44,6 +44,10 @@ class DescribedObject(db.Model):
             )
         )
 
+    @hybrid_property
+    def meta_description(self):
+        return 'regdoc_platform: {}\n\n'.format(self.family.name) + self.description
+
     __mapper_args__ = {
         'polymorphic_on' : type,
         'polymorphic_identity' : 'described_object',
