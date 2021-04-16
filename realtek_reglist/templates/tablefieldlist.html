@@ -22,7 +22,7 @@
 
 {% if table.description or current_user.is_authenticated %}
 <h3>Description</h3>
-{{ table.description | markdown }}
+{{ table.meta_description | markdown }}
 {% if current_user.is_authenticated %}
 <p class="edit"><a href="{{
     url_for('realtek.description_edit', platform=platform, itemtype='table', itemname=table.name) | lower

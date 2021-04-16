@@ -46,7 +46,10 @@ class DescribedObject(db.Model):
 
     @hybrid_property
     def meta_description(self):
-        return 'regdoc_platform: {}\n\n'.format(self.family.name) + self.description
+        if hasattr(self, 'family') and self.description :
+            return 'regdoc_platform: {}\n\n'.format(self.family.name) + self.description
+        else:
+            return None
 
     __mapper_args__ = {
         'polymorphic_on' : type,

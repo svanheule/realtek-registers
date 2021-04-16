@@ -19,7 +19,7 @@
     <td><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name.lower()) }}">{{ table.name }}</a></td>
     <td class="num">{{ table.size }}</td>
     <td class="num">{{ table.access_type }}</td>
-    <td class="inline-description">{{ table.description | summary | markdown }}</td>
+    <td class="inline-description">{{ table.meta_description | summary | markdown }}</td>
 </tr>
 {% endfor %}
 </tbody>

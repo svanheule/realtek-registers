@@ -22,10 +22,15 @@ login_manager.init_app(app)
 app.register_blueprint(bp, url_prefix='/realtek')
 app.register_blueprint(github_blueprint, url_prefix='/realtek/login')
 
+md = markdown.Markdown(
+        extensions=['sane_lists', 'smarty', 'meta'],
+        output_format='html5'
+    )
+
 @app.template_filter('markdown')
 def markdown_filter(s):
     if s:
-        return Markup(markdown.markdown(s, extensions=['sane_lists', 'smarty'], output_format='html5'))
+        return Markup(md.convert(s))
     else:
         return ''
 
