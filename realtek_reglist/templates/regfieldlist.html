@@ -7,8 +7,8 @@
 <h2>{{ platform }} register: {{ register.name | upper }}</h2>
 <h3>Details</h3>
 <dl>
-    <dt>Register name</dt><dd>{{ register.name }}</dd>
-    <dt>Register offset</dt><dd class="hexnum">{{ "%04x" | format(register.offset) }}</dd>
+    <dt>Name</dt><dd>{{ register.name }}</dd>
+    <dt>Offset</dt><dd class="hexnum">{{ "%04x" | format(register.offset) }}</dd>
     <dt>Feature</dt>
     <dd><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=register.feature.name) | lower }}">{{ register.feature.name }}</a></dd>
     {% if register.port_idx_max > 0 %}
