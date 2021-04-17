@@ -1,4 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import column_property
+from sqlalchemy.sql.expression import func
 
 from . import db
 from .description import DescribedObject
@@ -100,6 +102,16 @@ class Table(DescribedObject):
         'polymorphic_identity' : 'table',
     }
 
+    @hybrid_property
+    def data_width(self):
+        high_field_offset = db.session.query(
+                func.max(TableField.lsb)
+            ).filter(TableField.table_id == self.id)
+        return db.session.query(TableField.end)\
+                .filter(TableField.table_id == self.id)\
+                .filter(TableField.lsb == high_field_offset)\
+                .scalar()
+
     def get_description_metadata(self):
         return {'regdoc_platform': self.family.name}
 
@@ -117,6 +129,8 @@ class TableField(DescribedObject):
 
     table_id = db.Column(db.Integer, db.ForeignKey(Table.id), nullable=False)
     table = db.relationship('Table', backref=db.backref('fields', lazy=True), foreign_keys=[table_id])
+
+    end = column_property(lsb + size)
 
     __mapper_args__ = {
         'polymorphic_identity' : 'table_field',
