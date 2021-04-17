@@ -5,21 +5,21 @@ import xml.etree.ElementTree as etree
 
 class RegisterDocLinkProcessor(InlineProcessor):
     def handleMatch(self, m, data):
-        elem = etree.Element('a')
         page_type = m.group(1)
         page_name = m.group(2)
-        elem.text = page_name
         if hasattr(self.md, 'Meta') and 'regdoc_platform' in self.md.Meta:
             page_platform = self.md.Meta['regdoc_platform'][0]
+            elem = etree.Element('a')
+            if page_type == 'register':
+                elem.set('href', url_for('realtek.regfieldlist', platform=page_platform, register=page_name).lower())
+            elif page_type == 'table':
+                elem.set('href', url_for('realtek.tablefieldlist', platform=page_platform, table=page_name).lower())
+            else:
+                return (None, None, None)
         else:
-            return (None, None, None)
+            elem = etree.Element('span')
 
-        if page_type == 'register':
-            elem.set('href', url_for('realtek.regfieldlist', platform=page_platform, register=page_name).lower())
-        elif page_type == 'table':
-            elem.set('href', url_for('realtek.tablefieldlist', platform=page_platform, table=page_name).lower())
-        else:
-            return (None, None, None)
+        elem.text = page_name.upper()
         return (elem, m.start(0), m.end(0))
 
 class RegisterDocLinkExtension(Extension):
