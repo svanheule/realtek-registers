@@ -13,11 +13,9 @@
     <dt>Size</dt><dd>{{ table.size }}</dd>
     <dt>Access type</dt><dd>{{ table.access_type }}</dd>
     <dt>Control register</dt>
-    <dd><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
-            {{ table.ctrl_register.name }}</a></dd>
+    <dd>{{ linkto.link_to_register(platform, table.ctrl_register) }}</dd>
     <dt>Data register</dt>
-    <dd><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.data_register.name.lower()) }}">
-            {{ table.data_register.name }}</a></dd>
+    <dd>{{ linkto.link_to_register(platform, table.data_register) }}</dd>
 </dl>
 
 {% if table.description or current_user.is_authenticated %}

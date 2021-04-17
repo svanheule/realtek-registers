@@ -76,7 +76,7 @@
 <tbody>
 {% for table in register.tables %}
 <tr>
-    <td><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name) | lower }}">{{ table.name }}</a></td>
+    <td>{{ linkto.link_to_table(platform, table) }}</td>
     <td class="num">{{ table.access_type }}</td>
 </tr>
 {% endfor %}
