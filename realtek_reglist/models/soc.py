@@ -43,7 +43,7 @@ class Register(DescribedObject):
 
     tables = db.relationship('Table',
         primaryjoin='or_(Register.id == Table.ctrl_register_id, Register.id == Table.data_register_id)',
-        order_by='Table.name')
+        order_by='Table.access_type')
 
     __mapper_args__ = {
         'polymorphic_identity' : 'register',
