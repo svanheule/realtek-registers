@@ -10,9 +10,9 @@
     <dt>Name</dt><dd>{{ table.name }}</dd>
     <dt>Feature</dt>
     <dd><a href="{{ url_for('realtek.featuredetail', platform=platform, feature=table.feature.name) | lower }}">{{ table.feature.name }}</a></dd>
+    <dt>Type</dt><dd>{{ table.access_type }}</dd>
     <dt>Entries</dt><dd>{{ table.size }}</dd>
     <dt>Data width</dt><dd>{{ table.data_width_bits }}</dd>
-    <dt>Access type</dt><dd>{{ table.access_type }}</dd>
     <dt>Control register</dt>
     <dd>{{ linkto.link_to_register(platform, table.ctrl_register) }}</dd>
     <dt>Data register</dt>
