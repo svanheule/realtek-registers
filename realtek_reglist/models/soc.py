@@ -49,6 +49,9 @@ class Register(DescribedObject):
         'polymorphic_identity' : 'register',
     }
 
+    def get_description_metadata(self):
+        return {'regdoc_platform': self.family.name}
+
     def __repr__(self):
         return '<Register {}/{} : 0x{:04x}>'.format(self.family.name, self.name, self.offset)
 
@@ -66,6 +69,9 @@ class Field(DescribedObject):
     __mapper_args__ = {
         'polymorphic_identity' : 'field',
     }
+
+    def get_description_metadata(self):
+        return {'regdoc_platform': self.register.family.name}
 
     def __repr__(self):
         return '<Field {}/{}/{} : {}+{}>'.format(self.register.family.name,
@@ -94,6 +100,9 @@ class Table(DescribedObject):
         'polymorphic_identity' : 'table',
     }
 
+    def get_description_metadata(self):
+        return {'regdoc_platform': self.family.name}
+
     def __repr__(self):
         fam_name = self.family.name
         return '<Table {}/{} : ctrl={}>'.format(fam_name, self.name, self.ctrl_register)
@@ -112,6 +121,9 @@ class TableField(DescribedObject):
     __mapper_args__ = {
         'polymorphic_identity' : 'table_field',
     }
+
+    def get_description_metadata(self):
+        return {'regdoc_platform': self.table.family.name}
 
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
