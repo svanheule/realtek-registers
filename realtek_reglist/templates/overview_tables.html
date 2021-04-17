@@ -12,11 +12,10 @@
 {% for table in tables -%}
 {% if loop.previtem is undefined or loop.previtem.ctrl_register.name != table.ctrl_register.name -%}
 <tbody>
-<tr><th colspan="4"><a href="{{ url_for('realtek.regfieldlist', platform=platform, register=table.ctrl_register.name.lower()) }}">
-            {{ table.ctrl_register.name }}</a></th></tr>
+    <tr><th colspan="4">{{ linkto.link_to_register(platform, table.ctrl_register) }}</th></tr>
 {%- endif %}
 <tr>
-    <td><a href="{{ url_for('realtek.tablefieldlist', platform=platform, table=table.name.lower()) }}">{{ table.name }}</a></td>
+    <td>{{ linkto.link_to_table(platform, table) }}</td>
     <td class="num">{{ table.size }}</td>
     <td class="num">{{ table.access_type }}</td>
     <td class="inline-description">{{ table.description | summary | markdown }}</td>
