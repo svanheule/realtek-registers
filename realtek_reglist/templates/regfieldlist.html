@@ -71,6 +71,7 @@
 <tr>
     <th>Name</th>
     <th>Type</th>
+    <th>Summary</th>
 </tr>
 </thead>
 <tbody>
@@ -78,6 +79,7 @@
 <tr>
     <td>{{ linkto.link_to_table(platform, table) }}</td>
     <td class="num">{{ table.access_type }}</td>
+    <td><div class="inline-description">{{ table.description | summary | markdown }}</div></td>
 </tr>
 {% endfor %}
 </tbody>
