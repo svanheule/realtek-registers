@@ -1,4 +1,3 @@
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import func
 
@@ -86,6 +85,8 @@ class Table(DescribedObject):
     name = db.Column(db.Text, nullable=False)
     access_type = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
+    data_width = db.Column(db.Integer, nullable=False, default=0)
+    data_width_bits = column_property(32*data_width)
 
     family_id = db.Column(db.Integer, db.ForeignKey('family.id'), nullable=False)
     family = db.relationship('Family', backref=db.backref('tables', lazy=True))
@@ -101,16 +102,6 @@ class Table(DescribedObject):
     __mapper_args__ = {
         'polymorphic_identity' : 'table',
     }
-
-    @hybrid_property
-    def data_width(self):
-        high_field_offset = db.session.query(
-                func.max(TableField.lsb)
-            ).filter(TableField.table_id == self.id)
-        return db.session.query(TableField.end)\
-                .filter(TableField.table_id == self.id)\
-                .filter(TableField.lsb == high_field_offset)\
-                .scalar()
 
     def get_description_metadata(self):
         return {'regdoc_platform': self.family.name}
