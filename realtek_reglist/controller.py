@@ -59,7 +59,7 @@ def github_logged_in(blueprint, token):
 
         query = User.query.filter_by(username=username)
         try:
-            flash('Your are now logged in as {}'.format(username), 'info')
+            flash('You are now logged in as {}'.format(username), 'info')
             user = query.one()
             login_user(user)
         except NoResultFound:
