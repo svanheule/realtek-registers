@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask import abort, flash, render_template, request, redirect, url_for
 from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
@@ -161,6 +162,30 @@ def regfieldlist(platform, register):
             register=register, field_list=rows)
 
 
+def store_new_description(item, author, value):
+    last = DescriptionRevision.query\
+        .filter(DescriptionRevision.object_id == item.id)\
+        .filter(DescriptionRevision.timestamp == item.last_updated).one_or_none()
+    is_same_author = last.author == author if last else False
+    is_new_value = last.value != value if last else len(value) > 0
+    is_quick_edit = datetime.utcnow() - last.timestamp < timedelta(minutes=2) if last else False
+    is_quick_edit = False
+
+    if is_same_author and is_quick_edit and is_new_value:
+        # If the same author made a quick update, let's merge those updates
+        if len(value) == 0:
+            db.session.delete(last)
+        else:
+            last.value = value
+            last.timestamp = datetime.utcnow()
+        db.session.commit()
+    elif is_new_value:
+        with db.session.no_autoflush:
+            d = DescriptionRevision(author=author, value=value)
+            item.description_revisions.append(d)
+        db.session.commit()
+
+
 @bp.route('/<string:platform>/<string:itemtype>/<string:itemname>/edit/', methods=['GET', 'POST'])
 @bp.route('/<string:platform>/<string:itemtype>/<string:itemname>/<string:itemfield>/edit/', methods=['GET', 'POST'])
 def description_edit(platform, itemtype, itemname, itemfield=None):
@@ -199,13 +224,8 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
     if request.method == 'POST':
         user = current_user
         if not user.is_anonymous and user.is_active:
-            old_value = item.description
             new_value = request.form['description'].strip()
-            if old_value != new_value:
-                with db.session.no_autoflush:
-                    d = DescriptionRevision(author=user, value=new_value)
-                    item.description_revisions.append(d)
-                db.session.commit()
+            store_new_description(item, user, new_value)
         if itemtype == 'register':
             return redirect(url_for('realtek.regfieldlist', platform=platform, register=itemname))
         elif itemtype == 'table':
