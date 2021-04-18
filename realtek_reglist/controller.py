@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from flask import abort, flash, render_template, request, redirect, url_for
+from flask import current_app
 from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
@@ -62,10 +63,11 @@ def github_logged_in(blueprint, token):
             flash('You are now logged in as {}'.format(username), 'info')
             user = query.one()
             login_user(user)
+            current_app.logger.info('Logged in Github user {}'.format(username))
         except NoResultFound:
             flash('Hi, {}! Unfortunately you cannot log in here. '.format(username) +
                     'Please contact the site admin if you would like to contribute.', 'warning')
-            print('Unknown Github user {}'.format(username))
+            current_app.logger.warn('Unknown Github user {}'.format(username))
     return redirect(url_for('realtek.index'))
 
 
