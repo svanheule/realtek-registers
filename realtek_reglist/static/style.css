@@ -186,11 +186,13 @@ dd {
 .platforms .platform-block {
     width: 550px;
     margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 .platforms .platform-block h3 {
     padding: 0.3em;
     color: white;
-    background-color: black;
+    background-color: #999;
     margin: 0;
 }
 .platforms .platform-block h4 {
