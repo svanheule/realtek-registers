@@ -5,7 +5,7 @@ from flask import Blueprint
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import github
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import asc, desc, func
+from sqlalchemy import asc, desc, func, or_
 from sqlalchemy.orm import aliased, with_polymorphic
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import label
@@ -33,11 +33,27 @@ def index():
             dr.object_id.label('object_id'),
             func.max(dr.timestamp).label('last_update'),
         ).group_by(dr.object_id).subquery()
-    recently_changed = db.session.query(last_updates.c.last_update, dynamic_object, dynamic_object.description)\
+    last_changes = dict()
+    for f in families:
+        fld_reg = aliased(Register)
+        fld_tab = aliased(Table)
+        last_changes[f.name] = db.session.query(
+                last_updates.c.last_update,
+                dynamic_object,
+                dynamic_object.description
+            )\
             .join(last_updates, dynamic_object.id == last_updates.c.object_id)\
-            .order_by(desc(last_updates.c.last_update)).limit(15)
+            .outerjoin(fld_reg, dynamic_object.Field.register_id == fld_reg.id)\
+            .outerjoin(fld_tab, dynamic_object.TableField.table_id == fld_tab.id)\
+            .filter(or_(
+                    dynamic_object.Register.family_id == f.id,
+                    dynamic_object.Table.family_id == f.id,
+                    fld_reg.family_id == f.id,
+                    fld_tab.family_id == f.id,
+                ))\
+            .order_by(desc(last_updates.c.last_update)).limit(10)
 
-    return render_template('index.html', families=families, recently_changed=recently_changed)
+    return render_template('index.html', families=families, recently_changed=last_changes)
 
 @bp.route('/github')
 def login():
