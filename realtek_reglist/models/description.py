@@ -33,7 +33,8 @@ class DescribedObject(db.Model):
             select([func.max(DescriptionRevision.timestamp)])\
                 .group_by(DescriptionRevision.object_id)\
                 .where(DescriptionRevision.object_id == id)\
-                .correlate_except(DescriptionRevision)
+                .correlate_except(DescriptionRevision)\
+                .scalar_subquery()
         )
     description = column_property(
             select([DescriptionRevision.value]).where(
@@ -41,7 +42,7 @@ class DescribedObject(db.Model):
                     DescriptionRevision.object_id == id,
                     DescriptionRevision.timestamp == last_updated
                 )
-            )
+            ).scalar_subquery()
         )
 
     @hybrid_property
