@@ -34,26 +34,12 @@ def index():
             func.max(dr.timestamp).label('last_update'),
         ).group_by(dr.object_id).subquery()
     last_changes = dict()
-    for f in families:
-        fld_reg = aliased(Register)
-        fld_tab = aliased(Table)
-        last_changes[f.name] = db.session.query(
-                last_updates.c.last_update,
-                dynamic_object,
-                dynamic_object.description
-            )\
+    last_changes_all = db.session.query(last_updates.c.last_update, dynamic_object)\
             .join(last_updates, dynamic_object.id == last_updates.c.object_id)\
-            .outerjoin(fld_reg, dynamic_object.Field.register_id == fld_reg.id)\
-            .outerjoin(fld_tab, dynamic_object.TableField.table_id == fld_tab.id)\
-            .filter(or_(
-                    dynamic_object.Register.family_id == f.id,
-                    dynamic_object.Table.family_id == f.id,
-                    fld_reg.family_id == f.id,
-                    fld_tab.family_id == f.id,
-                ))\
-            .order_by(desc(last_updates.c.last_update)).limit(10)
+            .order_by(desc(last_updates.c.last_update))\
+            .limit(20)
 
-    return render_template('index.html', families=families, recently_changed=last_changes)
+    return render_template('index.html', families=families, recently_changed=last_changes, recent=last_changes_all)
 
 @bp.route('/github')
 def login():
