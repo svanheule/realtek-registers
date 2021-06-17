@@ -34,12 +34,31 @@ def index():
             func.max(dr.timestamp).label('last_update'),
         ).group_by(dr.object_id).subquery()
     last_changes = dict()
-    last_changes_all = db.session.query(last_updates.c.last_update, dynamic_object)\
-            .join(last_updates, dynamic_object.id == last_updates.c.object_id)\
-            .order_by(desc(last_updates.c.last_update))\
-            .limit(20)
+    reg_fld_fam = db.session.query(
+                Field.id.label('object_id'),
+                Register.family_id.label('family_id')
+            )\
+            .join(Field.register).subquery()
+    tab_fld_fam = db.session.query(
+                TableField.id.label('object_id'),
+                Table.family_id.label('family_id')
+            )\
+            .join(TableField.table).subquery()
+    for f in families:
+        last_changes[f.name] = db.session.query(last_updates.c.last_update, dynamic_object)\
+                .join(last_updates, dynamic_object.id == last_updates.c.object_id)\
+                .outerjoin(reg_fld_fam, reg_fld_fam.c.object_id == dynamic_object.id)\
+                .outerjoin(tab_fld_fam, tab_fld_fam.c.object_id == dynamic_object.id)\
+                .filter(or_(
+                    dynamic_object.Register.family_id == f.id,
+                    dynamic_object.Table.family_id == f.id,
+                    reg_fld_fam.c.family_id == f.id,
+                    tab_fld_fam.c.family_id == f.id,
+                ))\
+                .order_by(desc(last_updates.c.last_update))\
+                .limit(10)
 
-    return render_template('index.html', families=families, recently_changed=last_changes, recent=last_changes_all)
+    return render_template('index.html', families=families, recently_changed=last_changes)
 
 @bp.route('/github')
 def login():
