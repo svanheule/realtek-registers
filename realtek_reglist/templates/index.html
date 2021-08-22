@@ -13,6 +13,7 @@
         <li><a href="{{ url_for('realtek.featurelist', platform=family.name)  }}">Features</a></li>
         <li><a href="{{ url_for('realtek.reglist', platform=family.name)  }}">Registers</a></li>
         <li><a href="{{ url_for('realtek.tablelist', platform=family.name)  }}">Tables</a></li>
+        <li><a href="{{ url_for('realtek.cputaglist', platform=family.name)  }}">CPU tags</a></li>
     </ul>
     {% if family.name in recently_changed and recently_changed[family.name].count() > 0 -%}
     {% with changes = recently_changed[family.name] -%}

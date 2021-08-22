@@ -15,6 +15,7 @@ from .models import db
 from .models.auth import User
 from .models.description import DescriptionRevision, DescribedObject
 from .models.soc import Family, Feature, Register, Field, Table, TableField
+from .models.soc import CpuTag, CpuTagField
 from .oauth import github_blueprint
 
 bp = Blueprint('realtek', __name__, static_folder='static')
@@ -111,6 +112,12 @@ def query_platform_tables(platform, feature=None):
         q = q.join(Table.feature).filter(Feature.name == feature.upper())
 
     return q.filter(Family.name == platform).order_by(Register.name, Table.access_type, Table.name)
+
+
+def query_platform_cputags(platform):
+    q = db.session.query(CpuTag).join(CpuTag.family)
+
+    return q.filter(Family.name == platform).order_by(CpuTag.direction)
 
 
 @bp.route('/<string:platform>/')
@@ -236,6 +243,16 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
                 .join(TableField.table)\
                 .join(Table.family)\
                 .filter(Family.name == platform, Table.name == itemname.upper(), TableField.name == itemfield.upper())
+    elif itemtype == 'cputag':
+        if itemfield is None:
+            query = db.session.query(CpuTag)\
+                .join(CpuTag.family)\
+                .filter(Family.name == platform, CpuTag.direction == itemname.upper())
+        else:
+            query = db.session.query(CpuTagField)\
+                .join(CpuTagField.cputag)\
+                .join(CpuTag.family)\
+                .filter(Family.name == platform, CpuTag.direction == itemname.upper(), CpuTagField.lsb == itemfield.upper())
     else:
         abort(404)
 
@@ -253,6 +270,8 @@ def description_edit(platform, itemtype, itemname, itemfield=None):
             return redirect(url_for('realtek.regfieldlist', platform=platform, register=itemname))
         elif itemtype == 'table':
             return redirect(url_for('realtek.tablefieldlist', platform=platform, table=itemname))
+        elif itemtype == 'cputag':
+            return redirect(url_for('realtek.cputaglist', platform=platform))
         else:
             abort(404)
     else:
@@ -290,3 +309,12 @@ def tablefieldlist(platform, table):
 
     return render_template('tablefieldlist.html', platform=platform,
             table=table, field_list=rows)
+
+@bp.route('<string:platform>/cputag')
+def cputaglist(platform):
+    query = query_platform_cputags(platform)
+
+    if query.count() == 0:
+        abort(404)
+
+    return render_template('cputags.html', platform=platform, cputags=query.all())

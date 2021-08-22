@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}
+    Realtek - CPU tag info {{platform }}
+{% endblock %}
+{% block content %}
+{{ super() }}
+<h2>{{ platform }} CPU tags</h2>
+{% for cputag in cputags %}
+
+<h3>Frame direction: {{ cputag.direction }}</h3>
+{% if cputag.description or current_user.is_authenticated %}
+{{ cputag.meta_description | markdown }}
+{% if current_user.is_authenticated %}
+<p class="edit"><a href="{{
+    url_for('realtek.description_edit', platform=platform, itemtype='cputag', itemname=cputag.direction) | lower
+    }}">{% if cputag.description %}Edit{% else %}Create{% endif %}</a></p>
+{% endif %}
+{% endif %}
+
+<table class="fieldlist">
+<thead>
+<tr>
+    <th>Name</th>
+    <th>LSB</th>
+    <th>Bits</th>
+    <th>Description</th>
+</tr>
+</thead>
+<tbody>
+{% for field in cputag.fields %}
+<tr>
+    <td>{{ field.name | upper }}</td>
+    <td class="num">{{ "%d" | format(field.lsb) }}</td>
+    <td class="num">{{ "%d" | format(field.size) }}</td>
+    <td>
+        {% if current_user.is_authenticated %}
+        <div class="edit"><a href="{{
+            url_for('realtek.description_edit', platform=platform, itemtype='cputag', itemname=cputag.direction, itemfield=field.lsb) | lower
+            }}">Edit</a></div>
+        {% endif %}
+        <div class="inline-description">
+        {{ field.meta_description | markdown }}
+        </div>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endfor %}
+{% endblock %}
