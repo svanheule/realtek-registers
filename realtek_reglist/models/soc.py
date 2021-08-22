@@ -133,3 +133,40 @@ class TableField(DescribedObject):
     def __repr__(self):
         return '<TableField {}/{}/{} : {}+{}>'.format(self.table.family.name,
                 self.table.name, self.name, self.lsb, self.size)
+
+
+class CpuTag(DescribedObject):
+    __table__args = (db.UniqueConstraint('family_id', 'direction', name='u_family_cputag'),)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
+    direction = db.Column(db.Text, nullable=False)
+
+    family_id = db.Column(db.Integer, db.ForeignKey('family.id'), nullable=False)
+    family = db.relationship('Family', backref=db.backref('cputags', lazy=True))
+
+    __mapper_args__ = {
+        'polymorphic_identity' : 'cputag',
+    }
+
+
+class CpuTagField(DescribedObject):
+    __table_args__ = (db.UniqueConstraint('cputag_id', 'lsb', name='u_cputag_field'),)
+    id = db.Column(db.Integer, db.ForeignKey(DescribedObject.id), primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    lsb = db.Column(db.Integer, nullable=False)
+    size = db.Column(db.Integer, nullable=False)
+
+    cputag_id = db.Column(db.Integer, db.ForeignKey(CpuTag.id), nullable=False)
+    cputag = db.relationship('CpuTag', backref=db.backref('fields', lazy=True), foreign_keys=[cputag_id])
+
+    end = column_property(lsb + size)
+
+    __mapper_args__ = {
+        'polymorphic_identity' : 'cputag_field',
+    }
+
+    def get_description_metadata(self):
+        return {'regdoc_platform': self.cputag.family.name}
+
+    def __repr__(self):
+        return '<CpuTagField {}/{}/{} : {}+{}>'.format(self.cputag.family.name,
+                self.cputag.direction, self.name, self.lsb, self.size)
